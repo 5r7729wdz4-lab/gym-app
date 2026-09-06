@@ -122,20 +122,18 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 .wlist{list-style:none;margin-top:10px}
 .wlist li{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);padding:6px 0;border-bottom:1px dashed var(--line)}
 .wlist li b{color:var(--txt)}
-#timer{position:fixed;top:calc(env(safe-area-inset-top) + 126px);left:50%;transform:translateX(-50%) translateY(-180%);z-index:55;background:#171c13;border:1px solid rgba(200,245,66,.45);border-radius:16px;box-shadow:0 6px 22px rgba(0,0,0,.45);transition:transform .28s cubic-bezier(.2,.9,.3,1.15);overflow:hidden}
-#timer.show{transform:translateX(-50%) translateY(0)}
-#timer .cl{display:flex;align-items:center;gap:9px;padding:12px 12px 12px 18px;cursor:pointer;-webkit-user-select:none;user-select:none}
-#timer .cl .t{font-size:21px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums}
-#timer .cl .h{font-size:11px;color:var(--mut);font-weight:600}
-#timer .cl .x{border:0;background:var(--accdark);color:var(--acc);width:28px;height:28px;border-radius:50%;font:700 13px/1 inherit;cursor:pointer;padding:0;flex-shrink:0}
-#timer .ex2{display:none;padding:2px 16px 14px;text-align:center}
+#timer{position:fixed;left:12px;right:12px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:55;background:#171c13;border:1px solid rgba(200,245,66,.5);border-radius:16px;box-shadow:0 8px 28px rgba(0,0,0,.55);transition:transform .28s cubic-bezier(.2,.9,.3,1.15);overflow:hidden;transform:translateY(200%)}
+#timer.show{transform:translateY(0)}
+#timer .cl{display:flex;align-items:center;gap:10px;padding:13px 14px 13px 18px;cursor:pointer;-webkit-user-select:none;user-select:none}
+#timer .cl .t{font-size:24px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;min-width:64px}
+#timer .cl .h{font-size:12px;color:var(--mut);font-weight:600;flex:1}
+#timer .cl .x{border:0;background:var(--accdark);color:var(--acc);width:32px;height:32px;border-radius:50%;font:700 14px/1 inherit;cursor:pointer;padding:0;flex-shrink:0;margin-left:6px}
+#timer .ex2{display:none;padding:4px 16px 16px;text-align:center;border-top:1px dashed rgba(200,245,66,.25)}
 #timer.open .ex2{display:block}
-#timer.open{width:min(320px,86vw)}
-#timer.open .cl{padding-bottom:2px}
-#timer .ex2 b{display:block;font-size:11px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase;margin:8px 0 2px}
-#timer .ex2 .big{display:block;font-size:48px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1.15;margin-bottom:12px}
+#timer .ex2 b{display:block;font-size:11px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase;margin:10px 0 2px}
+#timer .ex2 .big{display:block;font-size:52px;font-weight:800;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1.1;margin-bottom:12px}
 #timer .tbtns{display:flex;gap:8px;justify-content:center}
-#timer .tbtns button{border:0;border-radius:11px;font:700 14px/1 inherit;padding:12px 20px;cursor:pointer;background:var(--card2);color:var(--txt)}
+#timer .tbtns button{border:0;border-radius:11px;font:700 14px/1 inherit;padding:13px 22px;cursor:pointer;background:var(--card2);color:var(--txt)}
 #timer .tbtns button.stop{background:var(--accdark);color:var(--acc)}
 #toast{position:fixed;left:50%;bottom:calc(160px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;background:#e9edf3;color:#10141a;font-size:13.5px;font-weight:700;padding:11px 18px;border-radius:99px;z-index:80;transition:.3s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -153,7 +151,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v3 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v4 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -307,7 +305,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 </div>
 </main>
 
-<div id="timer"><div class="cl" onclick="tExpand()"><span class="t" id="tTime">1:30</span><span class="h">отдых · тапни</span><button class="x" onclick="event.stopPropagation();tStop(true)" aria-label="Закрыть таймер">✕</button></div><div class="ex2"><b id="tLabel">Отдых</b><span class="big" id="tBig">1:30</span><div class="tbtns"><button onclick="tAdd(30)">+30 сек</button><button class="stop" onclick="tStop(true)">Стоп</button></div></div></div>
+<div id="timer"><div class="cl" onclick="tExpand()"><span class="t" id="tTime">1:30</span><span class="h">отдых · тап — открыть</span><button class="x" onclick="event.stopPropagation();tStop(true)" aria-label="Закрыть таймер">✕</button></div><div class="ex2"><b id="tLabel">Отдых</b><span class="big" id="tBig">1:30</span><div class="tbtns"><button onclick="tAdd(30)">+30 сек</button><button class="stop" onclick="tStop(true)">Стоп</button></div></div></div>
 <div id="toast"></div>
 
 <nav><div class="nbar">
@@ -629,6 +627,6 @@ renderEx();
 renderRules();
 renderStats();
 </script>
-<script>if("serviceWorker" in navigator&&location.protocol.indexOf("http")===0){navigator.serviceWorker.register("./sw.js").catch(function(){})}</script>
+<script>if("serviceWorker" in navigator){navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})});if(window.caches)caches.keys().then(function(ks){ks.forEach(function(k){caches.delete(k)})})}</script>
 </body>
 </html>
