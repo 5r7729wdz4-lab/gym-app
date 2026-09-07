@@ -112,8 +112,15 @@ details.tech .body{padding:2px 15px 15px}
 .altrow b{display:block;font-size:13.5px;color:var(--txt);font-weight:700}
 .altrow span{font-size:12px;color:var(--mut)}
 .prrow b i{font-style:normal}
-/* ---------- secrets ---------- */;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:11px}
-.rule .n{width:32px;height:32px;flex-shrink:0;border-radius:10px;background:var(--accdark);color:var(--acc);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
+/* ---------- secrets ---------- */
+.rule{display:flex;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:11px}
+.wbar{height:10px;background:var(--card2);border-radius:99px;overflow:hidden;margin:4px 0 14px}
+.wbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accdark),var(--acc));border-radius:99px;transition:width .5s}
+.wdays{display:flex;gap:6px;margin:0 0 10px}
+.wdays span{flex:1;text-align:center;padding:9px 0;border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--mut2);font-weight:800;font-size:13px;transition:.2s}
+.wdays span.on{background:var(--accdark);border-color:rgba(200,245,66,.4);color:var(--acc)}
+.wkmsg{font-size:13px;color:var(--mut);margin:2px 0 10px}
+.rule{display:flex;gap:13px;height:32px;flex-shrink:0;border-radius:10px;background:var(--accdark);color:var(--acc);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .rule.org .n{background:var(--orgdark);color:var(--org)}
 .rule h4{font-size:14.5px;font-weight:750;margin-bottom:3px}
 .rule p{font-size:13px;color:var(--mut)}
@@ -159,7 +166,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v5 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v6 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -187,6 +194,15 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
       <span class="chip">Записывай вес</span>
       <span class="chip org" id="kcalChip">🔥 ~520 ккал</span>
     </div>
+  </div>
+
+  <div class="card" id="weekCard">
+    <h2><span class="dot"></span><span id="wkTitle">Неделя 1 из 8</span></h2>
+    <div class="wbar"><i id="wkBar" style="width:12.5%"></i></div>
+    <div class="wdays" id="wkDays"><span data-d="A">A · Грудь</span><span data-d="B">B · Ноги</span><span data-d="C">C · Плечи</span></div>
+    <p class="wkmsg" id="wkMsg">Закрой все 3 дня недели: A → B → C</p>
+    <button class="done-btn" id="wkBtn" style="display:none" onclick="weekAction()">Перейти на неделю 2 →</button>
+    <button class="ghost" id="wkSkip" onclick="skipWeek()">Пропустил день — начать следующую неделю</button>
   </div>
 
   <div class="card">
@@ -524,6 +540,7 @@ function renderEx(){
   $('#doneBtn').classList.toggle('hit',localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10))==='1');
   $('#doneBtn').textContent=$('#doneBtn').classList.contains('hit')?'🔥 Сегодняшняя тренировка засчитана':'✅ Отметить тренировку выполненной';
   hydrateVideos();
+  renderWeek();
   if(document.getElementById('page-history').classList.contains('on'))renderHistory();
 }
 function renderRules(){
@@ -578,7 +595,7 @@ function markDone(){
     SS=SS.filter(function(s){return s.d!==t});saveSS();
     toast('Отметка снята');
   }else{
-    var rec={d:t,day:state.day,kcal:KCAL[state.day],ex:{}};
+    var rec={d:t,day:state.day,wk:(+localStorage.getItem('gym_week')||1),kcal:KCAL[state.day],ex:{}};
     DAYS[state.day].list.forEach(function(id){
       var w=localStorage.getItem(wkey(id));
       var sd=0;for(var i=1;i<=EX[id].sets;i++)if(done[id+'_'+i])sd++;
@@ -588,7 +605,8 @@ function markDone(){
     localStorage.setItem(k,'1');
     localStorage.removeItem(dkey(state.day));
     var tot=0;Object.keys(rec.ex).forEach(function(x){tot+=rec.ex[x][1]});
-    toast('Записал! 🔥 ~'+rec.kcal+' ккал · '+tot+' подходов');
+    var dn={};SS.forEach(function(s){if((+s.wk)===(+localStorage.getItem('gym_week')||1))dn[s.day]=1});
+    toast(Object.keys(dn).length>=3?'Неделя закрыта: 3/3! Жми «следующая неделя» 🔥':'Записал! 🔥 ~'+rec.kcal+' ккал · '+tot+' подходов');
   }
   renderEx();
 }
@@ -700,6 +718,41 @@ function drawChart(w){
   svg.innerHTML='<defs><linearGradient id="gr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8f542" stop-opacity=".25"/><stop offset="1" stop-color="#c8f542" stop-opacity="0"/></linearGradient></defs>'+
    '<path d="'+area+'" fill="url(#gr)"/><path d="'+path+'" fill="none" stroke="#c8f542" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
    pts.map(function(p){return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.5" fill="#c8f542"/>'}).join('');
+}
+
+/* ================= НЕДЕЛИ ================= */
+function renderWeek(){
+  var wk=+localStorage.getItem('gym_week')||1;
+  var dn={};SS.forEach(function(s){if((+s.wk)===wk)dn[s.day]=1});
+  var n=Object.keys(dn).length;
+  $('#wkTitle').textContent=wk<=8?('Неделя '+wk+' из 8'):('Неделя '+wk+' · цикл пройден');
+  $('#wkBar').style.width=Math.min(100,wk/8*100)+'%';
+  document.querySelectorAll('#wkDays span').forEach(function(el){el.classList.toggle('on',!!dn[el.dataset.d])});
+  var msg=$('#wkMsg'),btn=$('#wkBtn');
+  if(wk>8){
+    msg.textContent='8 недель позади — цикл пройден! Пересмотри программу и начинай заново.';
+    btn.style.display='block';btn.textContent='↺ Начать новый цикл (неделя 1)';
+  }else if(n>=3){
+    msg.textContent='Неделя закрыта: 3 из 3 дней! 💪 Время двигаться дальше.';
+    btn.style.display='block';btn.textContent='Перейти на неделю '+(wk+1)+' →';
+  }else{
+    msg.textContent='Закрой все 3 дня недели: осталось '+(3-n);
+    btn.style.display='none';
+  }
+}
+function advanceWeek(){
+  var wk=(+localStorage.getItem('gym_week')||1)+1;
+  localStorage.setItem('gym_week',wk);
+  renderEx();
+  toast('Неделя '+wk+' — погнали 💪');
+}
+function weekAction(){
+  var wk=+localStorage.getItem('gym_week')||1;
+  if(wk>8){localStorage.setItem('gym_week',1);renderEx();toast('Новый цикл — неделя 1')}
+  else advanceWeek();
+}
+function skipWeek(){
+  if(confirm('Начать следующую неделю? Пропущенный день не засчитается.'))advanceWeek();
 }
 
 /* ================= НАВИГАЦИЯ ================= */
