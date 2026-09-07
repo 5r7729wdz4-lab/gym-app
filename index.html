@@ -124,7 +124,8 @@ details.tech .body{padding:2px 15px 15px}
 .wdays span{flex:1;text-align:center;padding:9px 0;border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--mut2);font-weight:800;font-size:13px;transition:.2s}
 .wdays span.on{background:var(--accdark);border-color:rgba(200,245,66,.4);color:var(--acc)}
 .wkmsg{font-size:13px;color:var(--mut);margin:2px 0 10px}
-.rule{display:flex;gap:13px;height:32px;flex-shrink:0;border-radius:10px;background:var(--accdark);color:var(--acc);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.rule{display:block;position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 15px 15px 62px;margin-bottom:11px}
+.rule .n{position:absolute;left:15px;top:15px;width:32px;height:32px;border-radius:10px;background:var(--accdark);color:var(--acc);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .rule.org .n{background:var(--orgdark);color:var(--org)}
 .rule h4{font-size:14.5px;font-weight:750;margin-bottom:3px}
 .rule p{font-size:13px;color:var(--mut)}
@@ -170,7 +171,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v9 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v10 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -390,6 +391,15 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
     <div style="height:14px"></div>
     <svg id="chart" viewBox="0 0 300 130" preserveAspectRatio="none"></svg>
     <ul class="wlist" id="wlist"></ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="dot"></span>Резервная копия</h2>
+    <p id="dataStatus" style="font-size:12.5px;color:var(--mut);margin-bottom:10px">Считаю…</p>
+    <button class="bigbtn" style="background:var(--card2);color:var(--txt);border-color:var(--line2)" onclick="exportData()">💾 Скачать копию (файл)</button>
+    <div style="height:8px"></div>
+    <label class="bigbtn" style="display:block;text-align:center;background:var(--card2);color:var(--txt);border-color:var(--line2);cursor:pointer">♻️ Восстановить из файла<input type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></label>
+    <p style="font-size:11.5px;color:var(--mut2);margin-top:8px">Данные живут в браузере телефона. Копируй файл раз в пару недель — тогда ничего не потеряется даже при смене телефона.</p>
   </div>
 
   <div class="card">
@@ -840,6 +850,49 @@ function skipWeek(){
   if(confirm('Начать следующую неделю? Пропущенный день не засчитается.'))advanceWeek();
 }
 
+/* ================= БЭКАП ================= */
+function buildBackup(){
+  var kv={};
+  for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);
+    if(k.indexOf('gym_done_')===0||k.indexOf('gym_session_')===0||k.indexOf('gym_w_')===0||k==='gym_week')kv[k]=localStorage.getItem(k)}
+  return {app:'gym',v:1,made:new Date().toISOString().slice(0,10),sessions:SS,weights:JSON.parse(localStorage.getItem('gym_weights')||'[]'),kv:kv};
+}
+function applyBackup(o){
+  if(!o||o.app!=='gym'||!Array.isArray(o.sessions))throw new Error('bad file');
+  o.sessions.forEach(function(s){if(!SS.some(function(x){return x.d===s.d&&x.day===s.day}))SS.push(s)});
+  SS.sort(byDate);saveSS();
+  var w=JSON.parse(localStorage.getItem('gym_weights')||'[]');
+  (o.weights||[]).forEach(function(x){if(!w.some(function(y){return y.d===x.d}))w.push(x)});
+  w.sort(function(a,b){return a.d<b.d?-1:1});
+  localStorage.setItem('gym_weights',JSON.stringify(w));
+  Object.keys(o.kv||{}).forEach(function(k){localStorage.setItem(k,o.kv[k])});
+}
+function exportData(){
+  try{
+    var data=JSON.stringify(buildBackup());
+    var b=new Blob([data],{type:'application/json'});
+    var a=document.createElement('a');
+    a.href=URL.createObjectURL(b);
+    a.download='зал-бэкап-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    toast('Копия сохранена 💾');
+  }catch(e){toast('Не вышло: '+e.message)}
+}
+function importData(input){
+  var file=input.files&&input.files[0];if(!file)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{applyBackup(JSON.parse(r.result));renderStats();dataStatus();renderEx();toast('Данные восстановлены ♻️')}
+    catch(e){toast('Файл не подошёл 😕')}
+  };
+  r.readAsText(file);input.value='';
+}
+function dataStatus(){
+  var nW=0;
+  for(var i=0;i<localStorage.length;i++){if(localStorage.key(i).indexOf('gym_w_')===0)nW++}
+  $('#dataStatus').textContent='Сохранено: тренировок '+SS.length+' · замеров веса '+(JSON.parse(localStorage.getItem('gym_weights')||'[]').length)+' · записей весов упражнений '+nW;
+}
+
 /* ================= НАВИГАЦИЯ ================= */
 document.querySelectorAll('.nbar button').forEach(function(b){
   b.addEventListener('click',function(){
@@ -848,7 +901,7 @@ document.querySelectorAll('.nbar button').forEach(function(b){
     document.querySelectorAll('section.page').forEach(function(s){s.classList.remove('on')});
     $('#page-'+b.dataset.page).classList.add('on');
     window.scrollTo(0,0);
-    if(b.dataset.page==='progress')renderStats();
+    if(b.dataset.page==='progress'){renderStats();dataStatus()}
     if(b.dataset.page==='history')renderHistory();
   });
 });
