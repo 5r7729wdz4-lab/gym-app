@@ -160,6 +160,13 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 .done-btn{width:100%;background:var(--accdark);border:1.5px dashed rgba(200,245,66,.4);border-radius:14px;color:var(--acc);font:800 15px/1 inherit;padding:15px;cursor:pointer;letter-spacing:-.01em}
 .done-btn.hit{background:var(--acc);color:#101400;border-style:solid}
 .foot{text-align:center;color:var(--mut2);font-size:11.5px;padding:8px 0 16px}
+#trainZone{position:relative}
+#veil{position:absolute;inset:0;z-index:12;display:none;align-items:center;justify-content:center;background:rgba(10,12,15,.87);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border-radius:18px}
+#veil.on{display:flex}
+.vbox{text-align:center;padding:20px;max-width:300px}
+.vic{font-size:44px;margin-bottom:6px}
+.vbox h3{font-size:19px;font-weight:800;margin-bottom:6px}
+.vbox p{font-size:13px;color:var(--mut)}
 .exsvg .m{stroke:#3d4657;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .exsvg .f{stroke:var(--acc);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .exsvg .h{fill:var(--acc)}
@@ -171,7 +178,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v10 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v11 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -219,7 +226,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
     </div>
   </div>
 
-  <div id="exlist"></div>
+  <div id="trainZone"><div id="exlist"></div>
 
   <div class="card">
     <h2><span class="dot" style="background:var(--org)"></span>Кардио-финишер — после силовой</h2>
@@ -235,6 +242,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
   </div>
 
   <button class="done-btn" id="doneBtn" onclick="markDone()">✅ Отметить тренировку выполненной</button>
+    <div id="veil"><div class="vbox"><div class="vic">✅</div><h3>День закрыт</h3><p>Тренировка засчитана, красавчик. Пелена спадёт, когда закроешь неделю.</p><button class="ghost" style="max-width:240px;margin:12px auto 0;display:block" onclick="markDone()">Снять отметку</button></div></div></div>
   <div style="height:10px"></div>
   <p class="foot">Отметки и веса сохраняются в телефоне автоматически.<br>Программа рассчитана на 8–12 недель, потом пересмотр.</p>
 </section>
@@ -632,6 +640,7 @@ function renderEx(){
   Object.keys(done).forEach(function(k){var p=k.split('_'),id=p[0],s=p[1];var el=document.querySelector('.sdot[data-ex="'+id+'"][data-s="'+s+'"]');if(el)el.classList.add('done')});
   $('#doneBtn').classList.toggle('hit',localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10)+'_'+state.day)==='1');
   $('#doneBtn').textContent=$('#doneBtn').classList.contains('hit')?'🔥 Сегодняшняя тренировка засчитана':'✅ Отметить тренировку выполненной';
+  updateVeil();
   hydrateVideos();
   renderWeek();
   if(document.getElementById('page-history').classList.contains('on'))renderHistory();
@@ -816,6 +825,10 @@ function drawChart(w){
 }
 
 /* ================= НЕДЕЛИ ================= */
+function updateVeil(){
+  var marked=localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10)+'_'+state.day)==='1';
+  $('#veil').classList.toggle('on',marked);
+}
 function renderWeek(){
   var wk=+localStorage.getItem('gym_week')||1;
   var dn={};SS.forEach(function(s){if((+s.wk)===wk)dn[s.day]=1});
@@ -838,6 +851,7 @@ function renderWeek(){
 function advanceWeek(){
   var wk=(+localStorage.getItem('gym_week')||1)+1;
   localStorage.setItem('gym_week',wk);
+  for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i);if(k.indexOf('gym_session_')===0)localStorage.removeItem(k)}
   renderEx();
   toast('Неделя '+wk+' — погнали 💪');
 }
