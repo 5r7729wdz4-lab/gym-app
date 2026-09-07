@@ -537,7 +537,7 @@ function renderEx(){
   document.querySelectorAll('#dayseg button').forEach(function(b){b.classList.toggle('on',b.dataset.day===state.day)});
   loadDone();
   Object.keys(done).forEach(function(k){var p=k.split('_'),id=p[0],s=p[1];var el=document.querySelector('.sdot[data-ex="'+id+'"][data-s="'+s+'"]');if(el)el.classList.add('done')});
-  $('#doneBtn').classList.toggle('hit',localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10))==='1');
+  $('#doneBtn').classList.toggle('hit',localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10)+'_'+state.day)==='1');
   $('#doneBtn').textContent=$('#doneBtn').classList.contains('hit')?'🔥 Сегодняшняя тренировка засчитана':'✅ Отметить тренировку выполненной';
   hydrateVideos();
   renderWeek();
@@ -589,11 +589,12 @@ function plural(n){var m=n%10,hh=n%100;if(hh>=11&&hh<=14)return 'трениро�
 function fmtDate(iso){var d=new Date(iso+'T12:00');return d.getDate()+' '+['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][d.getMonth()]}
 function toggleAlt(id){var el=document.getElementById('alts_'+id);if(el)el.style.display=el.style.display==='block'?'none':'block'}
 function markDone(){
-  var t=new Date().toISOString().slice(0,10),k='gym_session_'+t;
+  var t=new Date().toISOString().slice(0,10);
+  var k='gym_session_'+t+'_'+state.day;
   if(localStorage.getItem(k)==='1'){
     localStorage.removeItem(k);
-    SS=SS.filter(function(s){return s.d!==t});saveSS();
-    toast('Отметка снята');
+    SS=SS.filter(function(s){return !(s.d===t&&s.day===state.day)});saveSS();
+    toast('Отметка дня '+state.day+' снята');
   }else{
     var rec={d:t,day:state.day,wk:(+localStorage.getItem('gym_week')||1),kcal:KCAL[state.day],ex:{}};
     DAYS[state.day].list.forEach(function(id){
@@ -601,7 +602,7 @@ function markDone(){
       var sd=0;for(var i=1;i<=EX[id].sets;i++)if(done[id+'_'+i])sd++;
       if(w||sd)rec.ex[id]=[w?+w:0,sd,EX[id].sets];
     });
-    SS=SS.filter(function(s){return s.d!==t});SS.push(rec);saveSS();
+    SS=SS.filter(function(s){return !(s.d===t&&s.day===state.day)});SS.push(rec);saveSS();
     localStorage.setItem(k,'1');
     localStorage.removeItem(dkey(state.day));
     var tot=0;Object.keys(rec.ex).forEach(function(x){tot+=rec.ex[x][1]});
@@ -612,8 +613,9 @@ function markDone(){
 }
 function clearToday(){
   var t=new Date().toISOString().slice(0,10);
-  localStorage.removeItem('gym_session_'+t);
+  ['A','B','C'].forEach(function(d){localStorage.removeItem('gym_session_'+t+'_'+d)});
   localStorage.removeItem(dkey(state.day));
+  SS=SS.filter(function(s){return s.d!==t});saveSS();
   renderEx();toast('Отметки за сегодня очищены');
 }
 function wipe(){if(confirm('Удалить ВСЮ историю (веса, отметки, график веса)?')){localStorage.clear();state.day='A';renderEx();renderStats();toast('Всё сброшено')}}
