@@ -66,6 +66,10 @@ section.page.on{display:block;animation:fadein .25s ease}
 .tl .t{width:74px;flex-shrink:0;font-weight:800;font-size:13.5px;color:var(--acc)}
 .tl .d{font-size:13.5px;color:var(--txt)}
 .tl .d small{display:block;color:var(--mut);font-size:12px}
+.tl .row.wide .t{width:auto;min-width:0;flex-shrink:0;color:var(--org);font-size:13px}
+.tl .row.wide{flex-direction:column;gap:2px}
+.tl .row.wide .d{font-size:14px;font-weight:700}
+.tl .row.wide .d small{margin-top:3px;font-weight:500}
 .ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
 .ex-h{display:flex;gap:13px;padding:15px 15px 13px}
 .ex-svg{width:96px;height:76px;flex-shrink:0;background:var(--card2);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -166,7 +170,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v8 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v9 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -251,26 +255,26 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
   <div id="rules"></div>
   <div class="card">
     <h2><span class="dot"></span>Сплиты: почему A/B/C и когда менять</h2>
-    <p style="font-size:13.5px;color:#d5dbe4;margin-bottom:10px">Сплит — просто способ разрезать тело по дням. Мышце важны: <b>суммарный объём</b> (10–20 рабочих подходов на группу в неделю) и <b>2 стимула за неделю</b>. Название сплита — вторично.</p>
+    <p style="font-size:13.5px;color:#d5dbe4;margin-bottom:10px">Сплит — просто способ разрезать тело по дням. Мышце важны две вещи за неделю: <b>суммарный объём</b> (10–20 рабочих подходов на группу) и <b>2 стимула за неделю</b>. Название сплита — вторично.</p>
     <div class="tl">
-      <div class="row"><div class="t">Фулбади</div><div class="d">Всё тело каждый раз, 3× в неделю<b><small>лучший вариант новичку: часто практуешь технику</small></b></div></div>
-      <div class="row"><div class="t">Верх/Низ</div><div class="d">Верх тела / низ тела, 4× в неделю<b><small>золотая середина: каждая половина 2× в неделю</small></b></div></div>
-      <div class="row"><div class="t">A/B/C</div><div class="d">Твой: грудь+спина / ноги / плечи+руки, 3×<b><small>каждая группа 2 стимула за 2 недели — рабочий компромисс при 3 днях</small></b></div></div>
+      <div class="row wide"><div class="d">Фулбади — всё тело каждый раз, 3× в неделю<small>Лучший вариант новичку: часто практуешь технику каждого движения, простая логика.</small></div></div>
+      <div class="row wide"><div class="d">Верх / Низ — 4× в неделю<small>Золотая середина для среднего уровня: каждая половина тела работает 2 раза в неделю.</small></div></div>
+      <div class="row wide"><div class="d">A/B/C — твой вариант: грудь+спина / ноги / плечи+руки, 3×<small>Каждая группа получает 2 стимула за 2 недели — рабочий компромисс при 3 днях в зале.</small></div></div>
+      <div class="row wide"><div class="d">Главный ориентир — не название, а самочувствие<small>Если после дня B ноги долбят так, что день A разваливается — сдвинь порядок дней или срежь объём.</small></div></div>
     </div>
-    <p style="font-size:12.5px;color:var(--mut);margin-top:8px">Ориентир — не название сплита, а самочувствие: если после дня B ноги долбят так, что день A разваливается — сдвигай порядок или режь объём.</p>
   </div>
 
   <div class="card">
     <h2><span class="dot"></span>Лайфхаки тренера</h2>
     <div class="tl">
-      <div class="row"><div class="t" style="color:var(--org)">+вес</div><div class="d">Схватил верх диапазона повторов во всех подходах → +2.5 кг (верх тела) / +5 кг (низ)<b><small>двойная прогрессия — двигатель роста</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">20–30 сек</div><div class="d">Растягивай целевую мышцу между подходами<b><small>свежие исследования 2024–2025: межподходная растяжка добавляет гипертрофию</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">До отказа</div><div class="d">Только последний подход изоляции. Базовые — всегда RIR 1–2<b><small>отказ на приседе/жиме = сломанная техника и травмы</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">Мозг</div><div class="d">На изоляции думай о мышце («вести локоть», «свести лопатки»), на базе — о движении<b><small>mind-muscle связь реально повышает отработку</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">2–3 сек</div><div class="d">Негатив (опускание) — подконтрольно. Бросил вес — потерял половину повтора</div></div>
-      <div class="row"><div class="t" style="color:var(--org)">Телефон</div><div class="d">Между подходами — таймер из этой памятки, а не лента<b><small>отдых по таймеру = стабильные повторения в каждом подходе</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">Голод</div><div class="d">На дефиците: белок в каждый приём, овощи, стакан воды перед едой<b><small>сытость собирается из белка + объёма + воды</small></b></div></div>
-      <div class="row"><div class="t" style="color:var(--org)">Разбит</div><div class="d">Чувствуешь себя выжатым — 1–2 дня отдыха лучше сорванной техники<b><small>пропустил тренировку = ничего, травма = −2 месяца</small></b></div></div>
+      <div class="row wide"><div class="d">Двойная прогрессия — двигатель роста<small>Схватил верх диапазона повторов во всех подходах → +2.5 кг (верх тела) / +5 кг (низ). Сначала повторения, потом вес.</small></div></div>
+      <div class="row wide"><div class="d">Растяжка целевой мышцы между подходами 20–30 сек<small>Свежие исследования 2024–2025: межподходная растяжка реально добавляет гипертрофию.</small></div></div>
+      <div class="row wide"><div class="d">До отказа — только последний подход изоляции<small>База (присед, жимы, тяги) — всегда RIR 1–2. Отказ на базе = развалившаяся техника и травмы.</small></div></div>
+      <div class="row wide"><div class="d">Мысленный фокус: на изоляции — мышца, на базе — движение<small>«Веди локоть», «сведи лопатки» — mind-muscle связь повышает отработку целевой мышцы.</small></div></div>
+      <div class="row wide"><div class="d">Негатив 2–3 секунды под контролем<small>Бросил вес — потерял половину повтора. Медленное опускание = больше роста и крепкие связки.</small></div></div>
+      <div class="row wide"><div class="d">Между подходами — таймер из памятки, не лента<small>Отдых по таймеру = стабильные повторения во всех подходах. Телефон-скроллинг убивает плотность тренировки.</small></div></div>
+      <div class="row wide"><div class="d">Голод на дефиците: белок + овощи + вода перед едой<small>Сытость собирается из белка в каждом приёме, объёма овощей и стакана воды.</small></div></div>
+      <div class="row wide"><div class="d">Чувствуешь себя выжатым — лучше 1–2 дня отдыха<small>Пропустил тренировку = ничего страшного. Травма = минус 2 месяца.</small></div></div>
     </div>
   </div>
 
@@ -347,13 +351,14 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
   </div>
 
   <div class="card">
-    <h2><span class="dot"></span>Добавки: когда и что пить</h2>
+    <h2><span class="dot"></span>Добавки: зачем и когда</h2>
     <div class="tl">
-      <div class="row"><div class="t" style="width:auto;min-width:70px">Утро</div><div class="d">Витамин D3 2000 МЕ + Омега-3 1–2 г — с завтраком<b><small>обязательно с пожирнее едой: D3 жирорастворимый, натощак почти не усваивается</small></b></div></div>
-      <div class="row"><div class="t" style="width:auto;min-width:70px">За 40 мин</div><div class="d">Кофеин 200–300 мг — за 30–45 мин до тренировки<b><small>не позже 16:00 — убьёшь сон; максимум 400 мг/день</small></b></div></div>
-      <div class="row"><div class="t" style="width:auto;min-width:70px">Всегда</div><div class="d">Креатин 5 г — каждый день, даже в дни отдыха, время не важно<b><small>важна регулярность; с водой, без загрузок и циклов</small></b></div></div>
-      <div class="row"><div class="t" style="width:auto;min-width:70px">После зала</div><div class="d">Протеин 1–2 скупа — если не добрал белка едой<b><small>просто удобная еда; «окно 30 минут» — миф, есть 2–3 часа</small></b></div></div>
-      <div class="row"><div class="t" style="width:auto;min-width:70px">Вечер</div><div class="d">Ничего стимулирующего — кофеин исключён<b><small>сон важнее любой добавки</small></b></div></div>
+      <div class="row wide"><div class="d">Креатин моногидрат — 5 г каждый день<small>ЗАЧЕМ: больше силы и объёма мышц, быстрее восстановление. Самая изученная добавка в спорте. КОГДА: время не важно — утром, вечером, когда помнишь. Главное — каждый день, даже в дни отдыха. С водой. Без загрузок и циклов.</small></div></div>
+      <div class="row wide"><div class="d">Кофеин — 200–300 мг за 30–45 мин до зала<small>ЗАЧЕМ: сила и выносливость выше, тренировка бодрее. КОГДА: за полчаса-час до зала и НЕ позже 16:00 — иначе испортишь сон. Больше 400 мг в день нельзя.</small></div></div>
+      <div class="row wide"><div class="d">Протеин — 1–2 скупа, когда не добрал белок едой<small>ЗАЧЕМ: добрать 190–210 г белка в день. Это просто удобная еда, не «химия». КОГДА: после зала или между приёмами пищи — разницы нет, «окно 30 минут» — миф.</small></div></div>
+      <div class="row wide"><div class="d">Витамин D3 — 2000 МЕ утром с завтраком<small>ЗАЧЕМ: иммунитет, гормоны, силы. В РФ солнца мало — почти у всех дефицит. КОГДА: утром с едой пожирнее — он жирорастворимый, натощак почти не усваивается. Курс с осени по весну.</small></div></div>
+      <div class="row wide"><div class="d">Омега-3 — 1–2 г с едой в день<small>ЗАЧЕМ: суставы, сердце, восстановление. КОГДА: в любой приём пищи. Обязательно, если рыбы на столе реже 2 раз в неделю.</small></div></div>
+      <div class="row wide"><div class="d">Вечером — ничего стимулирующего<small>Кофеин исключён: сон 7–9 часов важнее любой добавки в мире.</small></div></div>
     </div>
   </div>
 
