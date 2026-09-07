@@ -104,7 +104,15 @@ details.tech .body{padding:2px 15px 15px}
 .err li{position:relative;padding:5px 0 5px 24px;font-size:13px;color:#e8b8b8}
 .err li::before{content:"✕";position:absolute;left:2px;top:5px;color:var(--red);font-weight:800;font-size:12px}
 .rir{margin:0 15px 14px;font-size:12px;color:var(--org);background:var(--orgdark);border-radius:10px;padding:8px 11px;font-weight:600}
-.rule{display:flex;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:11px}
+.pill.alt{color:var(--blu);border-color:rgba(110,197,255,.35);background:var(--bludark);cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:9px}
+.alts{margin:0 15px 13px;border:1px dashed var(--line2);border-radius:10px;overflow:hidden}
+.alts b.t{display:block;padding:8px 12px 2px;font-size:10.5px;letter-spacing:.08em;color:var(--mut2);text-transform:uppercase}
+.altrow{padding:8px 12px;border-bottom:1px solid var(--line)}
+.altrow:last-child{border-bottom:0}
+.altrow b{display:block;font-size:13.5px;color:var(--txt);font-weight:700}
+.altrow span{font-size:12px;color:var(--mut)}
+.prrow b i{font-style:normal}
+/* ---------- secrets ---------- */;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px;margin-bottom:11px}
 .rule .n{width:32px;height:32px;flex-shrink:0;border-radius:10px;background:var(--accdark);color:var(--acc);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
 .rule.org .n{background:var(--orgdark);color:var(--org)}
 .rule h4{font-size:14.5px;font-weight:750;margin-bottom:3px}
@@ -151,7 +159,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
 <header>
   <div class="hbar">
     <div class="logo"><svg viewBox="0 0 24 24"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/></svg></div>
-    <div class="htxt"><h1>Программа зала</h1><p>v4 · 104 кг · 184 см · −0.5 кг/нед</p></div>
+    <div class="htxt"><h1>Программа зала</h1><p>v5 · 104 кг · 184 см · −0.5 кг/нед</p></div>
   </div>
   <div class="seg" id="dayseg">
     <button data-day="A" class="on"><b>День A</b><small>Грудь + Спина</small></button>
@@ -177,6 +185,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
       <span class="chip acc">⏱ Всего ~75–85 мин</span>
       <span class="chip">RIR 1–2</span>
       <span class="chip">Записывай вес</span>
+      <span class="chip org" id="kcalChip">🔥 ~520 ккал</span>
     </div>
   </div>
 
@@ -214,6 +223,15 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
     <h3>12 правил железа</h3>
     <p>Выжимка из исследований 2016–2026 гг. и практики тренеров. Это то, что отличает «хожу в зал» от «трансформация тела».</p>
   </div>
+  <div class="card">
+    <h2><span class="dot"></span>Как работает программа</h2>
+    <div class="tl">
+      <div class="row"><div class="t">A→B→C</div><div class="d">3 раза в неделю строго по кругу: A, B, C, снова A…<b><small>каждая мышца работает 2 раза за 2 недели — так растят наука и все тренеры</small></b></div></div>
+      <div class="row"><div class="t">каждые 6–8 нед</div><div class="d">Неделя разгрузки: те же упражнения, вес −40%<b><small>суставы и ЦНС чинятся, силы становится больше</small></b></div></div>
+      <div class="row"><div class="t">−0.5 кг</div><div class="d">Недельная цель по весу тела: жир уходит, мышцы остаются</div></div>
+    </div>
+  </div>
+
   <div id="rules"></div>
   <div class="card">
     <h2><span class="dot"></span>Если нет сил / мало времени</h2>
@@ -302,6 +320,21 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
   <p class="foot">Все данные живут только в этом браузере твоего телефона.</p>
 </section>
 
+<section class="page" id="page-history">
+  <div class="hero">
+    <h3>История тренировок</h3>
+    <p id="histSum">Пока пусто</p>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>Рост весов</h2>
+    <div id="prList"></div>
+  </div>
+  <div class="card">
+    <h2><span class="dot"></span>Журнал</h2>
+    <ul class="wlist" id="histList"></ul>
+  </div>
+</section>
+
 </div>
 </main>
 
@@ -313,6 +346,7 @@ button.ghost{width:100%;background:var(--card2);border:1.5px solid var(--line2);
   <button data-page="rules"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4.2 10.2c.7.7 1.2 1.7 1.2 2.8h6c0-1.1.5-2.1 1.2-2.8A6 6 0 0 0 12 3z"/></svg>Секреты</button>
   <button data-page="food"><svg viewBox="0 0 24 24"><path d="M12 8.5c-1.5-2-5-1.6-5 2 0 3.8 2.5 7.5 5 7.5s5-3.7 5-7.5c0-3.6-3.5-4-5-2zM12 8.5c0-2 .8-3.2 2.5-4"/></svg>Питание</button>
   <button data-page="progress"><svg viewBox="0 0 24 24"><path d="M4 19h16M6.5 15l3.5-4.5 3 2.5 5-6.5"/></svg>Прогресс</button>
+  <button data-page="history"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v4.5l3 2.5"/></svg>История</button>
 </div></nav>
 
 <script>
@@ -370,64 +404,64 @@ hammer:'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAS5bW
 var EX = {
 a1:{name:'Жим в тренажёре сидя',sub:'жим от груди / рычажная машина',mus:'Грудь · трицепс · передняя дельта',sets:3,reps:'10–12',rest:90,tag:'1A',svg:'chestPress',
 how:['Сядь: спина и затылок прижаты к спинке, рукояти на уровне середины груди','Выдох — выжми рукояти вперёд до почти прямых рук, локти в конце чуть согнуты','Задержись на 1 секунду, сжимая грудь','Вдох — верни рукояти за 2–3 секунды, растягивая грудь без удара'],
-err:['Отрывать таз и поясницу от спинки','Бросать вес в исходную — грудь работает только на жиме','Задирать локти выше плеч — грузится переднее плечо']},
+err:['Отрывать таз и поясницу от спинки','Бросать вес в исходную — грудь работает только на жиме','Задирать локти выше плеч — грузится переднее плечо'],alt:[['Жим гантелей лёжа','та же мышца, амплитуда свободнее'],['Отжимания от пола','если все жимы заняты: 3× до −2 от отказа'],['Жим в кроссовере лёжа на скамье','рукояти вместо гантелей']]},
 a2:{name:'Верхняя тяга блока',sub:'к груди, хват чуть шире плеч',mus:'Широчайшие · бицепс · задняя дельта',sets:3,reps:'10–12',rest:90,tag:'1B',svg:'pulldown',
 how:['Возьмись за гриф, сядь, зафиксируй бёдра валиками','Отклонись назад на 10–15°, грудь вперёд','Выдох — тяни гриф к верхней части груди, сводя лопатки','Вдох — отпусти гриф вверх за 2–3 сек, полностью растягивая спину'],
-err:['Тянуть бицепсом — спина почти не работает','Сильная раскачка корпусом','Не опускать гриф низко — половина амплитуды']},
+err:['Тянуть бицепсом — спина почти не работает','Сильная раскачка корпусом','Не опускать гриф низко — половина амплитуды'],alt:[['Тяга в тренажёре (рычажная)','то же движение с фиксацией корпуса'],['Подтягивания в гравитроне','3×8–10, противовес ~40% твоего веса'],['Тяга нижнего блока сидя','можно с той же рукоятью, корпус чуть назад']]},
 a3:{name:'Жим гантелей на наклонной',sub:'скамья ~30°, можно заменить жимом в тренажёре под углом',mus:'Верх груди · передняя дельта',sets:3,reps:'10–12',rest:90,tag:'2A',svg:'inclineDB',
 how:['Ляг, лопатки сведены и прижаты, гантели у груди','Выдох — жми вверх по лёгкой дуге, сближая гантели','Вдох — опусти подконтрольно до растяжения груди'],
-err:['Слишком крутой угол — работает плечо, не грудь','Гантель «гуляет» — бери вес поменьше','Выгибать поясницу мостом']},
+err:['Слишком крутой угол — работает плечо, не грудь','Гантель «гуляет» — бери вес поменьше','Выгибать поясницу мостом'],alt:[['Жим в тренажёре под углом 30°','та же механика'],['Жим гантелей на полу','меньше в плечи, если плечо хрустит'],['Сведение гантелей под углом','добивающее, 3×12']]},
 a4:{name:'Тяга горизонтального блока',sub:'к животу, узкая рукоять',mus:'Спина · задняя дельта · бицепс',sets:3,reps:'10–12',rest:90,tag:'2B',svg:'cableRow',
 how:['Сядь, колени чуть согнуты, спина прямая','Выдох — тяни рукоять к животу, локти вдоль тела, лопатки вместе','Задержись на 1 сек, сводя лопатки','Вдох — выпрями руки вперёд, растягивая спину'],
-err:['Откидываться корпусом назад','Поднимать плечи к ушам','Округлять спину']},
+err:['Откидываться корпусом назад','Поднимать плечи к ушам','Округлять спину'],alt:[['Тяга в рычажном тренажёре сидя','грудь в подушку, тяни к животу'],['Тяга каната нижнего блока','локти вдоль тела, свод лопаток в конце'],['Тяга гантели в наклоне с упором','по 3×10–12 на руку']]},
 a5:{name:'Бабочка (сведение)',sub:'pec deck',mus:'Грудь — изоляция',sets:3,reps:'12–15',rest:60,tag:'ФИНИШ',svg:'pecDeck',
 how:['Сядь, спина прижата, рукояти на уровне плеч','Выдох — сведи руки перед собой, задержись на 1 сек','Вдох — плавно разведи назад до растяжения груди'],
-err:['Огромный вес — руки срываются с траектории','Сведение рывком']},
+err:['Огромный вес — руки срываются с траектории','Сведение рывком'],alt:[['Сведение в кроссовере','шаг вперёд, сведи руки перед грудью'],['Махи гантелями лёжа на полу','до касания пола, 3×12–15']]},
 a6:{name:'Планка',sub:'кор · пресс',mus:'Пресс · кор',sets:3,reps:'30–45 сек',rest:45,tag:'КОР',svg:'plank',noW:1,
 how:['Предплечья под плечами, тело — прямая линия','Живот подтянут, таз не провисает и не задран','Дыши ровно, не задерживай дыхание'],
 err:['Провисшая поясница','Задранный таз','Задержка дыхания']},
 b1:{name:'Жим ногами',sub:'платформа 45° — база дня',mus:'Квадрицепсы · ягодицы',sets:4,reps:'10–12',rest:120,tag:'БАЗА',svg:'legPress',
 how:['Стопы на платформе на ширине плеч, чуть выше центра — упор в пятки','Выдох — выжимай платформу, не выпрямляя колени до упора','Вдох — опускай до ~90° в коленях, колени идут за носками','Поясница всё время прижата к спинке'],
-err:['Отрыв поясницы («клевок» тазом) — уменьши глубину','Полное защёлкивание коленей наверху','Колени сваливаются внутрь']},
+err:['Отрыв поясницы («клевок» тазом) — уменьши глубину','Полное защёлкивание коленей наверху','Колени сваливаются внутрь'],alt:[['Присед в Смите','стопы чуть вперёд, глубина та же'],['Гакк-присед','если машина 45° занята'],['Выпады с гантелями','3×10 на ногу — тяжело, но работает']]},
 b2:{name:'Сгибания ног лёжа',sub:'машина для бицепса бедра',mus:'Бицепс бедра — изоляция',sets:3,reps:'12–15',rest:75,tag:'2A',svg:'legCurl',
 how:['Ляг лицом вниз, валик над пяткой, таз прижат','Выдох — согни ноги, подтяни валик к ягодицам','Вдох — плавно верни, в конце растяни заднюю поверхность бедра'],
-err:['Оторванный от скамьи таз','Быстрый сброс веса вниз']},
+err:['Оторванный от скамьи таз','Быстрый сброс веса вниз'],alt:[['Сгибания сидя в тренажёре','если лёжа занята'],['Сгибания одной ноги стоя','по 3×12 на каждую']]},
 b3:{name:'Разгибания ног сидя',sub:'машина для квадрицепса',mus:'Квадрицепс — изоляция',sets:3,reps:'12–15',rest:75,tag:'2B',svg:'legExt',
 how:['Сядь, спина прижата, валик на передней части голеностопа','Выдох — разогни ноги почти до прямых, задержка 1 сек','Вдох — опусти за 2–3 сек, не бросая вес'],
-err:['Рывки и помощь корпусом','Слишком большой вес']},
+err:['Рывки и помощь корпусом','Слишком большой вес'],alt:[['Разгибания в раме-станке','вставь, подними угол'],['Жим ногами узкой постановкой','упор в верх платформы, 3×15']]},
 b4:{name:'Румынская тяга с гантелями',sub:'таз назад, спина прямая',mus:'Бицепс бедра · ягодицы',sets:3,reps:'10–12',rest:90,tag:'БАЗА',svg:'rdl',
 how:['Гантели у бёдер, колени чуть согнуты','Вдох — отводи таз назад, гантели скользят по ногам','Опустись до растяжения задней поверхности бедра (обычно до середины голени)','Выдох — поднимайся силой ягодиц и бицепса бедра'],
-err:['Круглая спина — запрещено, это травма','Превращать в присед, сильно сгибая колени','Гантели далеко от ног']},
+err:['Круглая спина — запрещено, это травма','Превращать в присед, сильно сгибая колени','Гантели далеко от ног'],alt:[['Гиперэкстензия с гантелью','у груди, 3×12'],['Ягодичный мост со штангой','3×12, пауза 2 сек наверху']]},
 b5:{name:'Гиперэкстензия',sub:'угол 45°',mus:'Ягодицы · поясница',sets:2,reps:'12–15',rest:60,tag:'ФИНИШ',svg:'hyperext',
 how:['Бёдра на подушке, ноги зафиксированы, руки скрещены на груди','Вдох — опустись плавно вниз','Выдох — поднимись до прямой линии тела, без перегиба назад'],
-err:['Задираться выше корпуса','Работать рывком']},
+err:['Задираться выше корпуса','Работать рывком'],alt:[['Гуд-морнинг лёгкой штангой','гриф 10–20 кг, техника важнее веса'],['Обратная гиперэкстензия','если есть']]},
 b6:{name:'Икры стоя',sub:'в тренажёре или жим носками в тренажёре',mus:'Икры',sets:4,reps:'15–20',rest:45,tag:'ФИНИШ',svg:'calf',
 how:['Носки на платформе, пятки свисают вниз','Опустись в полное растяжение','Поднимись на носки максимально высоко, задержка 1–2 сек'],
-err:['Прыжки за счёт инерции','Поламплитудная работа']},
+err:['Прыжки за счёт инерции','Поламплитудная работа'],alt:[['Икры в жиме ногами','носки на нижний край платформы'],['Икры в Смите','подставка под носки, 3×15']]},
 b7:{name:'Скручивания',sub:'на полу или в тренажёре для пресса',mus:'Пресс',sets:3,reps:'15–20',rest:45,tag:'КОР',svg:'crunch',noW:1,
 how:['Ляг, колени согнуты, поясница прижата к полу','Выдох — скрутись, отрывая лопатки от пола','Вдох — медленно вернись, не расслабляясь полностью'],
-err:['Тянуть шею руками','Работать поясницей, а не прессом']},
+err:['Тянуть шею руками','Работать поясницей, а не прессом'],alt:[['Скручивания в тренажёре','если есть — бери'],['Косые скручивания','по 3×12 на сторону'],['Планка','3×40–60 сек']]},
 c1:{name:'Жим гантелей сидя',sub:'или жим в тренажёре на плечи',mus:'Плечи (передний + средний пучок) · трицепс',sets:4,reps:'8–12',rest:120,tag:'БАЗА',svg:'dbPress',
 how:['Сядь, спина прижата, гантели у плеч','Локти чуть впереди корпуса, не разведены в стороны','Выдох — выжми гантели вверх, не выпрямляя локти до щелчка','Вдох — опусти до уровня ушей, растягивая плечо'],
-err:['Прогиб в пояснице','Ведение гантелей вперёд над лицом','Жим из-за головы — опасно для плеч']},
+err:['Прогиб в пояснице','Ведение гантелей вперёд над лицом','Жим из-за головы — опасно для плеч'],alt:[['Жим в тренажёре на плечи','рычажный — то же самое'],['Жим штанги сидя','хват чуть шире плеч'],['Жим Арнольда','гантелями, плавно']]},
 c2:{name:'Махи гантелями в стороны',sub:'в стороны до уровня плеч',mus:'Средняя дельта — изоляция',sets:3,reps:'12–15',rest:60,tag:'2A',svg:'lateral',
 how:['Гантели у бёдер, локти чуть согнуты','Выдох — подними руки в стороны до уровня плеч','Мизинец в верхней точке чуть выше большого пальца','Вдох — опусти за 2–3 секунды'],
-err:['Выше плеч — включается трапеция','Раскачка корпусом','Слишком тяжёлые гантели: 5–8 кг честнее, чем 15 с читингом']},
+err:['Выше плеч — включается трапеция','Раскачка корпусом','Слишком тяжёлые гантели: 5–8 кг честнее, чем 15 с читингом'],alt:[['Махи в кроссовере','нижний блок, тянуть в стороны'],['Махи сидя','читинг меньше, изоляция чище']]},
 c3:{name:'Обратная бабочка',sub:'задняя дельта в тренажёре',mus:'Задняя дельта — изоляция',sets:3,reps:'12–15',rest:60,tag:'2B',svg:'rearDelt',
 how:['Сядь лицом к тренажёру, грудь к подушке','Выдох — разведи рукояти назад-в стороны, руки почти прямые','Вдох — верни под контролем'],
-err:['Плечи ползут к ушам','Рывки корпусом']},
+err:['Плечи ползут к ушам','Рывки корпусом'],alt:[['Разведение гантелей в наклоне','корпус параллельно полу'],['Обратное разведение в Смите','гриф над головой']]},
 c4:{name:'Тяга к лицу',sub:'face pull — канат в кроссовере на уровне лица',mus:'Задняя дельта · трапеции · осанка',sets:2,reps:'15–20',rest:60,tag:'3A',svg:'facePull',
 how:['Возьмись за канат, сделай шаг назад','Выдох — тяни канат к лицу, разводя концы в стороны','Локти выше кистей, в конце сведи лопатки','Вдох — верни вперёд'],
-err:['Тянуть к груди, а не к лицу','Локти ниже плеч']},
+err:['Тянуть к груди, а не к лицу','Локти ниже плеч'],alt:[['Разведение в кроссовере назад','верхние блоки, руки вниз'],['Тяга каната к шее локтями врозь','то же движение другим хватом']]},
 c5:{name:'Разгибания на блоке',sub:'канат, локти прижаты',mus:'Трицепс — изоляция',sets:3,reps:'12–15',rest:60,tag:'3B',svg:'pushdown',
 how:['Локти прижаты к корпусу, корпус чуть наклонён','Выдох — разгибай руки вниз до полного выпрямления','Задержка 1 сек, разводя канат в стороны','Вдох — верни до уровня груди, не выше'],
-err:['Локти гуляют вперёд-назад','Помогать всем телом']},
+err:['Локти гуляют вперёд-назад','Помогать всем телом'],alt:[['Французский жим лёжа','EZ-гриф, локти не врозь'],['Разгибание из-за головы у блока','если канат занят']]},
 c6:{name:'Сгибания на скамье Скотта',sub:'или бицепс-машина',mus:'Бицепс — изоляция',sets:3,reps:'10–12',rest:60,tag:'4A',svg:'scottCurl',
 how:['Плечо прижато к подушке, локоть на шарнире','Выдох — согни руку до пикового сокращения','Вдох — опусти медленно, в нижней точке руку не расслабляй'],
-err:['Оторвать локоть от подушки','Забрасывать вес к плечу рывком']},
+err:['Оторвать локоть от подушки','Забрасывать вес к плечу рывком'],alt:[['Подъём штанги на бицепс в Смите','строгая амплитуда'],['Сгибания на блоке','нижний блок, рукоять-палка']]},
 c7:{name:'Молотки с гантелями',sub:'нейтральный хват — ладони друг к другу',mus:'Бицепс · брахиалис — толщина руки',sets:2,reps:'12',rest:60,tag:'ФИНИШ',svg:'hammer',
 how:['Гантели держи как молоток','Согни руку, не разворачивая кисть','Опусти подконтрольно за 2–3 сек'],
-err:['Раскачка корпусом','Разворот кисти в движении']}
+err:['Раскачка корпусом','Разворот кисти в движении'],alt:[['Молотки на блоке','канат снизу'],['Концентрированный сгиб','сидя, локоть в упор на бедро']]}
 };
 var DAYS = {
 A:{title:'День A — Грудь + Спина',desc:'Суперсеты-антагонисты: пока грудь отдыхает — работает спина. Больше жара за то же время.',list:['a1','a2','a3','a4','a5','a6']},
@@ -470,7 +504,7 @@ function exCard(id){
   return '<div class="ex" id="ex_'+id+'">'+
     '<div class="ex-h"><div class="ex-svg">'+(IMG[e.svg]?'<video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video>':SVG[e.svg])+'</div>'+
     '<div class="ex-info"><span class="tag'+(e.tag==='БАЗА'||e.tag==='ФИНИШ'||e.tag==='КОР'?' ss':'')+'">'+e.tag+'</span><h3>'+e.name+'</h3><div class="sub">'+e.sub+'</div><div class="mus">'+e.mus+'</div></div></div>'+
-    '<div class="pillrow"><span class="pill">'+e.sets+' × '+e.reps+'</span><button class="pill rest" onclick="tStart('+e.rest+')">⏱ Отдых '+e.rest+' сек</button></div>'+
+    '<div class="pillrow"><span class="pill">'+e.sets+' × '+e.reps+'</span><button class="pill rest" onclick="tStart('+e.rest+')">⏱ Отдых '+e.rest+' сек</button>'+(e.alt?'<button class="pill alt" onclick="toggleAlt('+id+')">🔄 Замена</button>':'')+'</div>'+(e.alt?'<div class="alts" id="alts_'+id+'" style="display:none"><b class="t">Замени, если тренажёр занят</b>'+e.alt.map(function(a){return '<div class="altrow"><b>'+a[0]+'</b><span>'+a[1]+'</span></div>'}).join('')+'</div>':'')+
     '<div class="sets"><span class="lbl">Подходы:</span>'+dots+'</div>'+w+rir+
     '<details class="tech"><summary>📖 Как делать правильно<span class="arr">▾</span></summary><div class="body">'+
     '<ol class="ol">'+how+'</ol>'+(err?'<div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--mut2);margin:8px 0 2px">ЧАСТЫЕ ОШИБКИ</div><ul class="err">'+err+'</ul>':'')+
@@ -483,12 +517,14 @@ function renderEx(){
   $('#exlist').innerHTML=h;
   $('#dayTitle').textContent=d.title;
   $('#dayDesc').textContent=d.desc;
+  $('#kcalChip').textContent='🔥 ~'+KCAL[state.day]+' ккал';
   document.querySelectorAll('#dayseg button').forEach(function(b){b.classList.toggle('on',b.dataset.day===state.day)});
   loadDone();
   Object.keys(done).forEach(function(k){var p=k.split('_'),id=p[0],s=p[1];var el=document.querySelector('.sdot[data-ex="'+id+'"][data-s="'+s+'"]');if(el)el.classList.add('done')});
   $('#doneBtn').classList.toggle('hit',localStorage.getItem('gym_session_'+new Date().toISOString().slice(0,10))==='1');
   $('#doneBtn').textContent=$('#doneBtn').classList.contains('hit')?'🔥 Сегодняшняя тренировка засчитана':'✅ Отметить тренировку выполненной';
   hydrateVideos();
+  if(document.getElementById('page-history').classList.contains('on'))renderHistory();
 }
 function renderRules(){
   $('#rules').innerHTML=RULES.map(function(r,i){return '<div class="rule"><div class="n">'+(i+1)+'</div><div><h4>'+r[0]+'</h4><p>'+r[1]+'</p></div></div>'}).join('');
@@ -527,10 +563,33 @@ function loadPrev(id){
     if(v)return v}
   return '';
 }
+var SS=JSON.parse(localStorage.getItem('gym_sessions')||'[]');
+function saveSS(){localStorage.setItem('gym_sessions',JSON.stringify(SS))}
+var KCAL={A:520,B:560,C:480};
+var DAYNAME={A:'День A · Грудь+Спина',B:'День B · Ноги+Пресс',C:'День C · Плечи+Руки'};
+function byDate(a,b){return a.d<b.d?-1:1}
+function plural(n){var m=n%10,hh=n%100;if(hh>=11&&hh<=14)return 'тренировок';if(m===1)return 'тренировка';if(m>=2&&m<=4)return 'тренировки';return 'тренировок'}
+function fmtDate(iso){var d=new Date(iso+'T12:00');return d.getDate()+' '+['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][d.getMonth()]}
+function toggleAlt(id){var el=document.getElementById('alts_'+id);if(el)el.style.display=el.style.display==='block'?'none':'block'}
 function markDone(){
   var t=new Date().toISOString().slice(0,10),k='gym_session_'+t;
-  if(localStorage.getItem(k)==='1'){localStorage.removeItem(k)}
-  else{localStorage.setItem(k,'1');toast('Красавчик! До встречи в следующий раз 💪')}
+  if(localStorage.getItem(k)==='1'){
+    localStorage.removeItem(k);
+    SS=SS.filter(function(s){return s.d!==t});saveSS();
+    toast('Отметка снята');
+  }else{
+    var rec={d:t,day:state.day,kcal:KCAL[state.day],ex:{}};
+    DAYS[state.day].list.forEach(function(id){
+      var w=localStorage.getItem(wkey(id));
+      var sd=0;for(var i=1;i<=EX[id].sets;i++)if(done[id+'_'+i])sd++;
+      if(w||sd)rec.ex[id]=[w?+w:0,sd,EX[id].sets];
+    });
+    SS=SS.filter(function(s){return s.d!==t});SS.push(rec);saveSS();
+    localStorage.setItem(k,'1');
+    localStorage.removeItem(dkey(state.day));
+    var tot=0;Object.keys(rec.ex).forEach(function(x){tot+=rec.ex[x][1]});
+    toast('Записал! 🔥 ~'+rec.kcal+' ккал · '+tot+' подходов');
+  }
   renderEx();
 }
 function clearToday(){
@@ -541,27 +600,47 @@ function clearToday(){
 }
 function wipe(){if(confirm('Удалить ВСЮ историю (веса, отметки, график веса)?')){localStorage.clear();state.day='A';renderEx();renderStats();toast('Всё сброшено')}}
 
-/* ================= ТАЙМЕР ================= */
-var tInt=null,tLeft=0;
+/* ================= ТАЙМЕР (живёт вне страницы) ================= */
+var tInt=null,tLeft=0,tEnd=0;
 function buzz(p){if(navigator.vibrate)navigator.vibrate(p)}
 function tStart(sec){
-  clearInterval(tInt);tLeft=sec;
+  clearInterval(tInt);tLeft=sec;tEnd=Date.now()+sec*1000;
+  localStorage.setItem('gym_tend',tEnd);
   $('#tLabel').textContent='Отдых · '+sec+' сек';
-  tick();tInt=setInterval(tick,1000);
-  $('#timer').classList.remove('open');
-  $('#timer').classList.add('show');
+  $('#timer').classList.remove('open');$('#timer').classList.add('show');
+  tick();tInt=setInterval(tick,500);
   if(navigator.vibrate)navigator.vibrate(40);
 }
 function tick(){
+  if(tEnd)tLeft=Math.max(0,Math.round((tEnd-Date.now())/1000));
   syncT();
   if(tLeft<=3&&tLeft>0)buzz(30);
-  if(tLeft<=0){clearInterval(tInt);tInt=null;$('#timer').classList.add('open');syncT();toast('Отдых окончен — поехали 💪');buzz([90,60,90])}
-  tLeft--;
+  if(tLeft<=0){
+    clearInterval(tInt);tInt=null;
+    localStorage.removeItem('gym_tend');
+    $('#timer').classList.add('show','open');
+    toast('Отдых окончен — поехали 💪');buzz([90,60,90]);
+  }
 }
-function tAdd(n){tLeft+=n;if(!tInt)tInt=setInterval(tick,1000);syncT()}
-function tStop(manual){clearInterval(tInt);tInt=null;$('#timer').classList.remove('show');$('#timer').classList.remove('open')}
+function tAdd(n){
+  if(!tEnd)tEnd=Date.now();
+  tEnd+=n*1000;localStorage.setItem('gym_tend',tEnd);
+  if(!tInt)tInt=setInterval(tick,500);
+  tick();
+}
+function tStop(manual){clearInterval(tInt);tInt=null;tEnd=0;localStorage.removeItem('gym_tend');$('#timer').classList.remove('show','open')}
 function tExpand(){if(!tInt&&!$('#timer').classList.contains('open'))return;$('#timer').classList.toggle('open');syncT()}
 function syncT(){var s=fmt(Math.max(0,tLeft));$('#tTime').textContent=s;$('#tBig').textContent=s}
+(function restoreTimer(){
+  var te=+localStorage.getItem('gym_tend');
+  if(te&&te>Date.now()){
+    tEnd=te;tLeft=Math.round((te-Date.now())/1000);
+    $('#timer').classList.add('show');
+    tInt=setInterval(tick,500);
+  }else localStorage.removeItem('gym_tend');
+})();
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&tInt)tick()});
+window.addEventListener('pageshow',function(){if(tInt)tick()});
 
 /* ================= ВЕС И СТАТИСТИКА ================= */
 function addWeight(){
@@ -576,12 +655,9 @@ function addWeight(){
 }
 function renderStats(){
   var w=JSON.parse(localStorage.getItem('gym_weights')||'[]');
-  var sess=0;
-  for(var i=0;i<localStorage.length;i++){if(localStorage.key(i).indexOf('gym_session_')===0)sess++}
-  $('#stTotal').textContent=sess;
+  $('#stTotal').textContent=SS.length;
   var wk=0,now=new Date();
-  for(var i=0;i<7;i++){var d=new Date(now);d.setDate(now.getDate()-i);
-    if(localStorage.getItem('gym_session_'+d.toISOString().slice(0,10))==='1')wk++}
+  SS.forEach(function(s){var d=new Date(s.d+'T12:00');var diff=(now-d)/86400000;if(diff>=0&&diff<7)wk++});
   $('#stWeek').textContent=wk;
   if(w.length>=2){var d=w[w.length-1].v-w[0].v;$('#stDelta').textContent=(d>0?'+':'')+d.toFixed(1)}
   else{$('#stDelta').textContent='—'}
@@ -590,6 +666,29 @@ function renderStats(){
     var dt=new Date(e.d+'T12:00');var ds=dt.getDate()+' '+['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'][dt.getMonth()];
     ul.innerHTML+='<li><span>'+ds+'</span><b>'+e.v.toFixed(1)+' кг</b></li>'});
   drawChart(w);
+}
+function renderHistory(){
+  if(!SS.length){$('#histSum').textContent='Пока пусто — тренируйся и жми ✅ в конце';$('#prList').innerHTML='';$('#histList').innerHTML='';return}
+  var sum=0;SS.forEach(function(s){sum+=s.kcal||0});
+  $('#histSum').textContent='Отходил '+SS.length+' '+plural(SS.length)+' · сожжено ~'+sum+' ккал';
+  var rows='';
+  ['A','B','C'].forEach(function(d){DAYS[d].list.forEach(function(id){
+    var pts=SS.filter(function(s){return s.ex[id]&&s.ex[id][0]>0}).sort(byDate);
+    if(!pts.length)return;
+    var last=pts[pts.length-1].ex[id][0];
+    var best=0;pts.forEach(function(p){best=Math.max(best,p.ex[id][0])});
+    var prev=pts.length>1?pts[pts.length-2].ex[id][0]:last;
+    var ar=last>prev?'↑':last<prev?'↓':'→';
+    var ac=ar==='↑'?'var(--acc)':ar==='↓'?'var(--red)':'var(--mut)';
+    rows+='<li><span>'+EX[id].name+'</span><b>'+last+' кг <i style="color:'+ac+'">'+ar+'</i> <small style="color:var(--mut2);font-weight:600">рекорд '+best+'</small></b></li>';
+  })});
+  $('#prList').innerHTML=rows?'<ul class="wlist">'+rows+'</ul>':'<p class="foot">Записывай веса в упражнениях — тут появится твой рост</p>';
+  var j='';
+  SS.slice().sort(byDate).reverse().slice(0,20).forEach(function(s){
+    var sets=0;Object.keys(s.ex).forEach(function(k){sets+=s.ex[k][1]});
+    j+='<li><span>'+fmtDate(s.d)+' · '+DAYNAME[s.day]+' · 🔥 '+s.kcal+' ккал</span><b>'+sets+' подх.</b></li>';
+  });
+  $('#histList').innerHTML=j;
 }
 function drawChart(w){
   var svg=$('#chart');if(w.length<2){svg.innerHTML='<text x="150" y="68" text-anchor="middle" fill="#5d6878" font-size="11">Запиши вес дважды — появится график</text>';return}
@@ -612,6 +711,7 @@ document.querySelectorAll('.nbar button').forEach(function(b){
     $('#page-'+b.dataset.page).classList.add('on');
     window.scrollTo(0,0);
     if(b.dataset.page==='progress')renderStats();
+    if(b.dataset.page==='history')renderHistory();
   });
 });
 document.querySelectorAll('#dayseg button').forEach(function(b){
