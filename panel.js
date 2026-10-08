@@ -109,11 +109,21 @@ function weekSets(wk){
 }
 
 /* ---------- медиа упражнения ---------- */
+/* Миниатюра: всегда рисуем схему, поверх неё — настоящее видео,
+   если оно загрузилось. Видео НЕ перекрашивается, показывается как есть
+   на светлой подложке. Если видео не декодировалось — остаётся схема,
+   то есть миниатюра никогда не бывает пустой. */
 function media(id){
   var e=EX[id];
-  return '<div class="media">'+(SVG[e.svg]||'')+'</div>';
+  var v = IMG[e.svg]
+    ? '<video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video>' : '';
+  return '<div class="media">'+frame(SVG[e.svg]||'')+v+'</div>';
 }
-/* видео показываем только в шторке — там светлая подложка, клип выглядит родным */
+/* схему обрезаем по центру, чтобы заполняла квадрат миниатюры */
+function frame(svg){
+  if(!svg) return '';
+  return svg.replace('<svg ', '<svg preserveAspectRatio="xMidYMid slice" ');
+}
 function clip(id){
   var e=EX[id];
   if(!IMG[e.svg]) return '';
@@ -166,7 +176,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 19 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 20 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;

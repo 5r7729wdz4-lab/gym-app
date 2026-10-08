@@ -139,8 +139,14 @@ header{padding:calc(env(safe-area-inset-top) + 22px) 0 6px}
 .media svg .f{stroke:#F0F0F4;stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .media svg .h{fill:#F0F0F4}
 .media svg .p{fill:#3E3E4A}
-.clip{margin:0 0 18px;border-radius:var(--r-m);overflow:hidden;background:#F4F4F2;border:1px solid var(--line2);position:relative}
-.clip video{width:100%;display:block;aspect-ratio:16/10;object-fit:contain;background:#F4F4F2}
+.clip{margin:0 0 18px;border-radius:var(--r-m);overflow:hidden;background:#F2F2F0;border:1px solid var(--line2);position:relative;aspect-ratio:16/10}
+.clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#F2F2F0}
+.clip svg{position:absolute;inset:0;width:100%;height:100%}
+.clip svg .m{stroke:#C4C4C4}.clip svg .f{stroke:#141414}.clip svg .h{fill:#141414}.clip svg .p{fill:#C4C4C4}
+/* видео поверх схемы: появляется только когда реально декодировалось */
+.media video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  background:#F2F2F0;opacity:0;transition:opacity .35s}
+.media video.ready{opacity:1}
 .ex-b{flex:1;min-width:0}
 .ex-b .tag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
 .ex-b h3{font-size:16.5px;font-weight:600;letter-spacing:-.03em;line-height:1.2;margin-top:7px}
