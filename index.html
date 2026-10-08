@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="panel.css?v=16">
+<link rel="stylesheet" href="panel.css?v=17">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,7 +45,7 @@
   <div class="hd">
     <div class="hd-l">
       <h1 id="greet">Доброе утро</h1>
-      <div class="date" id="dline">версия 16 · <span id="dline2">—</span></div>
+      <div class="date" id="dline">версия 17 · <span id="dline2">—</span></div>
     </div>
     <div class="orb">
       <div class="orb-glow"></div>
@@ -418,19 +418,22 @@
 
 <div id="toast"></div>
 
-<script src="data.js?v=16"></script>
-<script src="panel.js?v=16"></script>
+<script src="data.js?v=17"></script>
+<script src="panel.js?v=17"></script>
 <script>
-/* сброс старого service worker и кешей, чтобы новая версия открылась сразу */
+/* снимаем возможные старые service worker'ы, но НЕ перезагружаем страницу:
+   принудительный redirect ловил цикл перезагрузок в iOS standalone */
 (function(){
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.getRegistrations().then(function(rs){ rs.forEach(function(r){ r.unregister() }) });
-    if(window.caches) caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k) }) });
-  }
-  if(sessionStorage.getItem('zal16')!=='1'){
-    sessionStorage.setItem('zal16','1');
-    location.replace(location.pathname+'?r='+Date.now());
-  }
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistrations().then(function(rs){
+        rs.forEach(function(r){ r.unregister() });
+      });
+    }
+    if(window.caches){
+      caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k) }) });
+    }
+  }catch(e){}
 })();
 </script>
 </body>

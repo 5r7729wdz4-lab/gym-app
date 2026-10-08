@@ -16,13 +16,30 @@ function ldate(d){
 function today(){ return ldate(new Date()) }
 function dkey(d){ return 'gym_done_'+d+'_'+today() }
 function wkey(id){ return 'gym_w_'+id+'_'+today() }
-function load(k,dflt){ var v=localStorage.getItem(k); return v===null?dflt:v }
-function save(k,v){ localStorage.setItem(k,v) }
+/* localStorage может кинуть (приватный режим, переполнение) —
+   тогда работаем в памяти, но страница обязана остаться живой */
+var MEM={};
+var LS_ok=(function(){
+  try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return true }
+  catch(e){ return false }
+})();
+function load(k,dflt){
+  try{ var v=localStorage.getItem(k); return v===null?(k in MEM?MEM[k]:dflt):v }
+  catch(e){ return (k in MEM)?MEM[k]:dflt }
+}
+function save(k,v){
+  MEM[k]=v;
+  try{ localStorage.setItem(k,v) }catch(e){}
+}
 
 var state = { day: load('gym_day','A'), page:'today', done:{}, sheet:-1 };
 
-var SS = JSON.parse(load('gym_sessions','[]'));
-function saveSS(){ save('gym_sessions', JSON.stringify(SS)) }
+function readJSON(k,dflt){
+  try{ return JSON.parse(load(k,null))||dflt }catch(e){ return dflt }
+}
+var SS = readJSON('gym_sessions',[]);
+if(!Array.isArray(SS)) SS=[];
+function saveSS(){ try{ save('gym_sessions', JSON.stringify(SS)) }catch(e){} }
 
 function fmt(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0') }
 function plural(n){ var m=n%10, h=n%100; if(h>=11&&h<=14)return 'подходов'; if(m===1)return 'подход'; if(m>=2&&m<=4)return 'подхода'; return 'подходов' }
@@ -149,7 +166,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 16 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 17 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
@@ -181,7 +198,7 @@ function renderDay(){
   else { btn.className='cta alt'; btn.textContent='Отметить выполненной' }
   $('#ctaTxt').textContent=ns>0?('Продолжить тренировку'):'Начать тренировку';
 
-  state.done=JSON.parse(load(dkey(state.day),'{}'));
+  state.done=readJSON(dkey(state.day),{});
   paintSets();
   hydrate();
 }
@@ -670,7 +687,7 @@ $$('#nb button').forEach(function(b){
 $$('#daysel button').forEach(function(b){
   b.addEventListener('click',function(){
     state.day=b.dataset.day; save('gym_day',state.day);
-    state.done=JSON.parse(load(dkey(state.day),'{}'));
+    state.done=readJSON(dkey(state.day),{});
     renderDay(); runPaints();
   });
 });
@@ -682,12 +699,19 @@ document.addEventListener('keydown',function(e){
   }
 });
 
+function fail(msg){
+  var b=document.createElement('div');
+  b.style.cssText='position:fixed;left:10px;right:10px;bottom:14px;z-index:99999;background:#1a0d0d;color:#ffb4b4;border:1px solid #552;padding:12px;border-radius:12px;font:12px/1.4 monospace';
+  b.textContent=msg;
+  document.body.appendChild(b);
+}
+
 /* ---------- старт ---------- */
-migrate();
-state.done=JSON.parse(load(dkey(state.day),'{}'));
-renderHead();
-renderDay();
-renderWeek();
-renderRules();
-renderStats();
+try{ migrate() }catch(e){}
+state.done=readJSON(dkey(state.day),{});
+try{ renderHead() }catch(e){}
+try{ renderDay() }catch(e){ fail('День не отрисовался: '+e.message) }
+try{ renderWeek() }catch(e){}
+try{ renderRules() }catch(e){}
+try{ renderStats() }catch(e){}
 window.addEventListener('resize',function(){ if(!run.on) return; runGo(run.i) });
