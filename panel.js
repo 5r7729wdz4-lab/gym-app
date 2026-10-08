@@ -166,7 +166,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 18 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 19 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
@@ -567,6 +567,16 @@ function dataStatus(){
   var nw=0;
   for(var i=0;i<localStorage.length;i++) if(localStorage.key(i).indexOf('gym_w_')===0) nw++;
   $('#dataStatus').textContent='Тренировок: '+SS.length+' · взвешиваний: '+JSON.parse(load('gym_weights','[]')).length+' · записей весов: '+nw;
+}
+
+function freshUpdate(){
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistration().then(function(r){ if(r) r.update() });
+    }
+    if(window.caches){ caches.keys().then(function(ks){ ks.forEach(function(k){ if(k.indexOf('zal-')===0) caches.delete(k) }) }) }
+  }catch(e){}
+  location.reload();
 }
 
 /* ---------- бэкап ---------- */

@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="panel.css?v=18">
+<link rel="stylesheet" href="panel.css?v=19">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,7 +45,7 @@
   <div class="hd">
     <div class="hd-l">
       <h1 id="greet">Доброе утро</h1>
-      <div class="date" id="dline">версия 18 · <span id="dline2">—</span></div>
+      <div class="date" id="dline">версия 19 · <span id="dline2">—</span></div>
     </div>
     <div class="orb">
       <div class="orb-glow"></div>
@@ -335,6 +335,7 @@
   <div class="sect">
     <div class="sect-hd"><h2>Данные</h2></div>
     <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn alt" style="width:100%" onclick="freshUpdate()">Проверить обновления</button>
       <button class="btn alt" style="width:100%" onclick="clearToday()">Очистить отметки за сегодня</button>
       <button class="btn alt" style="width:100%" onclick="wipe()">Сбросить весь прогресс</button>
     </div>
@@ -422,23 +423,43 @@
 
 <div id="toast"></div>
 
-<script src="data.js?v=18"></script>
-<script src="panel.js?v=18"></script>
+<script src="data.js?v=19"></script>
+<script src="panel.js?v=19"></script>
 <script>
-/* снимаем возможные старые service worker'ы, но НЕ перезагружаем страницу:
-   принудительный redirect ловил цикл перезагрузок в iOS standalone */
+/* Регистрируем сетевой-первый service worker: при каждом открытии
+   страница сначала идёт в сеть, кеш используется только офлайн.
+   Старые кеши чистим, но страницу не перезагружаем — это ловило
+   цикл перезагрузок в iOS. */
 (function(){
   try{
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.getRegistrations().then(function(rs){
-        rs.forEach(function(r){ r.unregister() });
-      });
-    }
-    if(window.caches){
-      caches.keys().then(function(ks){ ks.forEach(function(k){ caches.delete(k) }) });
+      navigator.serviceWorker.register('sw.js', {updateViaCache:'none'});
     }
   }catch(e){}
 })();
+</script>
+<button id="upd" style="display:none;position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom));z-index:95;background:#fff;color:#000;border:0;border-radius:99px;padding:14px;font:600 14px/1 inherit;box-shadow:0 8px 24px rgba(0,0,0,.5);cursor:pointer">Есть обновление — нажми, чтобы обновить</button>
+<script>
+window.__freshUpdate=function(){
+  try{
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.getRegistration().then(function(r){ if(r) r.update() });
+    }
+  }catch(e){}
+  location.reload();
+};
+window.addEventListener('load',function(){
+  try{
+    var h=document.getElementById('upd');
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.addEventListener('controllerchange',function(){
+        if(window.__navigating) return;
+        h.style.display='block';
+      });
+    }
+    h.addEventListener('click',function(){ window.__navigating=1; window.__freshUpdate() });
+  }catch(e){}
+});
 </script>
 </body>
 </html>
