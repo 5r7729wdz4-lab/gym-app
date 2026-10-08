@@ -9,7 +9,11 @@ var DAYS_ID = ['A','B','C'];
 var DAYNAME = {A:'Верх', B:'Спина и руки', C:'Ноги и грудь'};
 
 /* ---------- хранилище ---------- */
-function today(){ return new Date().toISOString().slice(0,10) }
+/* дата в локальном времени: toISOString даёт UTC и сдвигает сутки после полуночи */
+function ldate(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function today(){ return ldate(new Date()) }
 function dkey(d){ return 'gym_done_'+d+'_'+today() }
 function wkey(id){ return 'gym_w_'+id+'_'+today() }
 function load(k,dflt){ var v=localStorage.getItem(k); return v===null?dflt:v }
@@ -30,6 +34,24 @@ function toast(m){
 }
 
 /* ---------- календарь недель ---------- */
+function shiftDays(iso,n){
+  var d=new Date(iso+'T12:00'); d.setDate(d.getDate()+n);
+  return ldate(d);
+}
+function wkFromDate(iso){
+  var a=new Date(cycleStart()+'T12:00'), b=new Date(iso+'T12:00');
+  return Math.max(1,Math.floor((b-a)/86400000/7)+1);
+}
+/* Один раз приводим старые записи к календарю: неделя считается от даты,
+   а не от счётчика нажатий. Старт цикла выводим из самой ранней тренировки. */
+function migrate(){
+  if(load('gym_v16','0')==='1') return;
+  var dates=SS.map(function(x){ return x.d }).filter(Boolean).sort();
+  save('gym_start',dates.length?dates[0]:today());
+  SS.forEach(function(x){ if(x.d) x.wk=wkFromDate(x.d) });
+  saveSS();
+  save('gym_v16','1');
+}
 function cycleStart(){
   var s=load('gym_start',null);
   if(!s){ s=today(); save('gym_start',s) }
@@ -39,26 +61,46 @@ function curWeek(){
   var a=new Date(cycleStart()+'T12:00'), b=new Date();
   return Math.max(1, Math.floor((b-a)/86400000/7)+1);
 }
+function setWeekNow(n){
+  n=Math.max(1,Math.min(60,n|0));
+  save('gym_start',shiftDays(today(),-(n-1)*7));
+  SS.forEach(function(x){ if(x.d) x.wk=wkFromDate(x.d) });
+  saveSS();
+  renderDay(); runPaints(); renderStats();
+  toast('Неделя '+n);
+}
 function weekRange(wk){
   var s=new Date(cycleStart()+'T12:00'); s.setDate(s.getDate()+(wk-1)*7);
   var e=new Date(s); e.setDate(e.getDate()+6);
   var f=function(d){ return d.getDate()+'.'+String(d.getMonth()+1).padStart(2,'0') };
   return f(s)+' – '+f(e);
 }
-function weekDays(wk){
-  var set={};
-  SS.forEach(function(s){ if(+s.wk===wk) set[s.day]=1 });
-  return set;
+function weekDone(wk){
+  var n=0;
+  DAYS_ID.forEach(function(d){
+    if(SS.some(function(x){ return +x.wk===wk && x.day===d && x.ex && Object.keys(x.ex).length })) n++;
+  });
+  return n;
+}
+function weekSets(wk){
+  var n=0;
+  SS.forEach(function(x){
+    if(+x.wk!==wk) return;
+    Object.keys(x.ex||{}).forEach(function(k){ n+=x.ex[k][1] });
+  });
+  return n;
 }
 
 /* ---------- медиа упражнения ---------- */
 function media(id){
   var e=EX[id];
-  var vid = IMG[e.svg]
-    ? '<video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video>' : '';
-  var base = SVG[e.svg];
-  if(!base && !vid) return '<div class="media"></div>';
-  return '<div class="media">'+(base||'')+vid+'</div>';
+  return '<div class="media">'+(SVG[e.svg]||'')+'</div>';
+}
+/* видео показываем только в шторке — там светлая подложка, клип выглядит родным */
+function clip(id){
+  var e=EX[id];
+  if(!IMG[e.svg]) return '';
+  return '<div class="clip"><video muted loop playsinline autoplay preload="auto" data-vid="'+e.svg+'"></video></div>';
 }
 var vidObs=null;
 function hydrate(){
@@ -105,9 +147,9 @@ function renderHead(){
   var d=new Date();
   var wd=['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'][d.getDay()];
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
-  var wk=curWeek(), set=weekDays(wk), n=Object.keys(set).length;
+  var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 15 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 16 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
@@ -169,7 +211,7 @@ function exCard(id){
 function prevW(id){
   for(var i=1;i<60;i++){
     var d=new Date(); d.setDate(d.getDate()-i);
-    var v=localStorage.getItem('gym_w_'+id+'_'+d.toISOString().slice(0,10));
+    var v=localStorage.getItem('gym_w_'+id+'_'+ldate(d));
     if(v) return 'прошлый '+v;
   }
   return '';
@@ -248,26 +290,34 @@ function markDone(){
 
 /* ---------- неделя ---------- */
 function renderWeek(){
-  var wk=curWeek(), set=weekDays(wk), n=Object.keys(set).length;
+  var wk=curWeek(), n=weekDone(wk), sets=weekSets(wk);
   var rows='';
   DAYS_ID.forEach(function(d){
     var line='<span class="rl">'+d+'</span>';
     for(var w=1;w<=8;w++){
-      var has=SS.some(function(s){ return +s.wk===w&&s.day===d });
-      var edge=(w===wk)?' now':'';
-      line+='<i class="'+(has?'full':'')+edge+'" title="Неделя '+w+', день '+d+'"></i>';
+      var has=SS.some(function(x){ return +x.wk===w && x.day===d && x.ex && Object.keys(x.ex).length });
+      line+='<i class="'+(has?'full':'')+(w===wk?' now':'')+'" title="неделя '+w+', день '+d+'"></i>';
     }
     rows+=line;
   });
   $('#wkDots').innerHTML=rows+
-    '<div class="wklegend" style="grid-column:2 / span 8"><span>1 неделя</span><span>'+wk+' сейчас</span><span>8 неделя</span></div>';
-  var done=SS.filter(function(s){ return +s.wk<=wk }).length;
-  $('#wkBar').style.width=Math.min(100,(done/(wk*3))*100)+'%';
-  var msg = n>=3
-    ? 'Неделя закрыта: три дня из трёх.'+(wk>=7?' Скоро разгрузка — вес ниже на 40%.':'')
-    : 'Дни '+weekRange(wk)+'. Осталось тренировок: '+(3-n)+'.';
-  if(wk>8) msg='Цикл пройден, неделя '+wk+'. Пересмотри программу или начни цикл заново.';
-  $('#wkMsg').textContent=msg;
+    '<div class="wklegend" style="grid-column:2 / span 8"><span>неделя 1</span><span>'+wk+' сейчас</span><span>неделя 8</span></div>';
+
+  var planned=0, doneTotal=0;
+  for(var w=1;w<=wk;w++){ planned+=3; doneTotal+=weekDone(w) }
+  $('#wkBar').style.width=Math.min(100,(doneTotal/planned)*100)+'%';
+  $('#wkMsg').textContent = n>=3
+    ? 'Неделя закрыта: '+sets+' подходов за 7 дней.'
+    : weekRange(wk)+' · тренировок закрыто '+n+' из 3 · подходов '+sets;
+  $('#wkSets').textContent=sets;
+  $('#wkIdx').textContent=wk;
+  $('#wkPct').textContent=cyclePct()+'%';
+}
+function shiftWeek(d){ setWeekNow(curWeek()+d) }
+function cyclePct(){
+  var wk=curWeek(), planned=0, done=0;
+  for(var w=1;w<=wk;w++){ planned+=3; done+=weekDone(w) }
+  return Math.round(Math.min(100,(done/planned)*100));
 }
 function resetCycle(){
   if(!confirm('Начать цикл заново сегодня? История сохранится, но неделя 1 начнётся с этого дня.')) return;
@@ -287,7 +337,7 @@ function openSheet(id){
   $('#shThumb').innerHTML=media(id);
   $('#shName').textContent=e.name;
   $('#shMus').textContent=e.mus+' · '+e.sets+' × '+e.reps+' · отдых '+e.rest+' сек';
-  var h='';
+  var h=clip(id);
   h+='<div class="grp"><div class="lb">Как выполнять</div><ol class="steps">'+
      e.how.map(function(x){ return '<li>'+x+'</li>' }).join('')+'</ol></div>';
   if(e.err&&e.err.length){
@@ -633,6 +683,7 @@ document.addEventListener('keydown',function(e){
 });
 
 /* ---------- старт ---------- */
+migrate();
 state.done=JSON.parse(load(dkey(state.day),'{}'));
 renderHead();
 renderDay();
