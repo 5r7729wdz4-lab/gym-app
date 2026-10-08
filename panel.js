@@ -6,7 +6,7 @@
 var $ = function(s){ return document.querySelector(s) };
 var $$ = function(s){ return Array.prototype.slice.call(document.querySelectorAll(s)) };
 var DAYS_ID = ['A','B','C'];
-var DAYNAME = {A:'Верх', B:'Спина и руки', C:'Ноги и грудь'};
+var DAYNAME = {A:'Грудь + спина', B:'Плечи + руки', C:'Грудь + ноги'};
 
 /* ---------- хранилище ---------- */
 /* дата в локальном времени: toISOString даёт UTC и сдвигает сутки после полуночи */
@@ -166,7 +166,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 17 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 18 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;

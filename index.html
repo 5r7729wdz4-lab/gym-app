@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="panel.css?v=17">
+<link rel="stylesheet" href="panel.css?v=18">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,7 +45,7 @@
   <div class="hd">
     <div class="hd-l">
       <h1 id="greet">Доброе утро</h1>
-      <div class="date" id="dline">версия 17 · <span id="dline2">—</span></div>
+      <div class="date" id="dline">версия 18 · <span id="dline2">—</span></div>
     </div>
     <div class="orb">
       <div class="orb-glow"></div>
@@ -60,9 +60,9 @@
 <!-- ================= ТРЕНИРОВКА ================= -->
 <section class="page on" id="p-today">
   <div class="daysel" id="daysel">
-    <button data-day="A" class="on"><b>Пн</b><span>Верх</span></button>
-    <button data-day="B"><b>Ср</b><span>Спина + руки</span></button>
-    <button data-day="C"><b>Пт</b><span>Ноги</span></button>
+    <button data-day="A" class="on"><b>Пн</b><span>Грудь + спина</span></button>
+    <button data-day="B"><b>Ср</b><span>Плечи + руки</span></button>
+    <button data-day="C"><b>Пт</b><span>Грудь + ноги</span></button>
   </div>
 
   <div class="sect" style="margin-top:18px">
@@ -115,15 +115,18 @@
   </div>
 
   <div class="sect">
-    <div class="sect-hd"><h2>Кардио-финишер</h2></div>
+    <div class="sect-hd"><h2>Финишер — после каждого дня</h2></div>
     <div class="tile">
+      <p style="margin-bottom:14px">Одинаковый после всех трёх дней. Сначала разгибатели спины и ягодицы, потом спокойная ходьба.</p>
       <div class="tl">
-        <div class="row"><div class="k num">15–20′</div><div class="v"><b>Ходьба в горку, эллипс, велотренажёр</b>пульс 120–140<small>Говоришь, но петь тяжело. После силовой — жир горит активнее.</small></div></div>
+        <div class="row"><div class="k num">3 × 15</div><div class="v"><b>Гиперэкстензия</b>угол 45°, вес к груди<small>Бёдра на подушке, ноги зафиксированы. Вниз плавно, вверх до прямой линии, без перегиба назад.</small></div></div>
+        <div class="row"><div class="k num">15 мин</div><div class="v"><b>Ходьба в горку или на улице</b>пульс до 130<small>Сразу после силовой — гликоген уже потрачен, жир горит активнее. Не бег: кардио здесь для восстановления, а не для нагрузки.</small></div></div>
       </div>
+      <div style="margin-top:14px"><button class="btn" style="width:100%" onclick="tStart(900)"><svg class="ic s16" style="display:inline-block;vertical-align:-3px;margin-right:6px"><use href="#i-clock"/></svg>Таймер прогулки · 15:00</button></div>
     </div>
   </div>
 
-  <div class="sect">
+<div class="sect">
     <div class="sect-hd"><h2>Вне дома — одна и та же</h2></div>
     <div class="tile">
       <p style="margin-bottom:14px">Без инвентаря, около 35 минут, весь объём на пресс. Вариант на двор, парк или гостиницу.</p>
@@ -160,18 +163,19 @@
   </div>
 
   <div class="sect">
-    <div class="sect-hd"><h2>Ноги в каждом дне</h2></div>
+    <div class="sect-hd"><h2>Почему отдельного дня ног нет</h2></div>
     <div class="tile">
-      <p style="margin-bottom:14px">Ноги — около 40% массы тела. Одна тренировка только ногами сжигает больше, чем 30 минут велосипеда, а ноги раз в неделю проигрывают двум-трём по силе и объёму. Поэтому в День C ноги получают полный объём, а в Дни A и B — по два лёгких изоляционных движения.</p>
+      <p style="margin-bottom:14px">Ноги разложены по два упражнения в каждом дне. Это не компромисс, а как раз рекомендуемый вариант: порог в одну тренировку — <b>10–12 подходов на мышцу</b>, дальше активация мотонейронов падает. При 18 подходах в неделю нужны минимум два стимуля, при 25–30 — три.</p>
       <div class="tl">
-        <div class="row"><div class="k">Изоляция</div><div class="v"><b>Вместо базовых приседаний</b>разгибания и сгибания<small>Поясница не нагружена, упражнение легко выкинуть при нехватке времени.</small></div></div>
-        <div class="row"><div class="k">Икры</div><div class="v"><b>Стоячие и сидячие вместе</b>3 + 2 подхода<small>Утверждение «сидя = soleus» исследованиями не подтверждено: сидячий жим вдвое урезает рост икроножных.</small></div></div>
-        <div class="row"><div class="k">Хамстринги</div><div class="v"><b>Вторым упражнением дня C</b>4 подхода<small>Жим ногами их почти не грузит: в 12-недельном исследовании прирост 3.1% — вне значимости.</small></div></div>
+        <div class="row"><div class="k">18 подходов</div><div class="v"><b>Ноги в неделю, 3 стимуля</b>жим ногами и икры стоя в понедельник<small>В среду болгарский сплит-присед и икры сидя, в пятницу сгибания и разведение ног.</small></div></div>
+        <div class="row"><div class="k">10–20</div><div class="v"><b>Рабочий диапазон на мышцу в неделю</b>Меньше 10 — мало, больше 20 — резерв тратится впустую</div></div>
+        <div class="row"><div class="k">2–4 RIR</div><div class="v"><b>Останавливайся за 2–4 повтора до отказа</b>Лучшее соотношение стимула к усталости. До отказа — только последний подход изоляции</div></div>
+        <div class="row"><div class="k">3–6 недель</div><div class="v"><b>Разгрузка раз в 3–6 недель</b>одна неделя, объём ниже на 40–60%, интенсивность та же<small>Восьмая неделя цикла у тебя уже разгрузочная.</small></div></div>
       </div>
     </div>
   </div>
 
-  <div class="sect">
+<div class="sect">
     <div class="sect-hd"><h2>Двенадцать правил</h2></div>
     <div id="rules" class="tile" style="padding:0;border:0;background:transparent"></div>
   </div>
@@ -198,7 +202,7 @@
         <div class="row"><div class="k">03</div><div class="v"><b>До отказа — только изоляция</b>На базе всегда 1–2 повтора в запасе. Отказ ломает технику.</div></div>
         <div class="row"><div class="k">04</div><div class="v"><b>Тренажёры — полноценный инструмент</b>Мета-анализ 13 работ, 1016 человек: между свободными весами и машинами на гипертрофию разницы нет. Разница только в силе.</div></div>
         <div class="row"><div class="k">05</div><div class="v"><b>Растяжка между подходами 20–30 сек</b>Свежие данные 2024–2025: добавляет гипертрофию.</div></div>
-        <div class="row"><div class="k">06</div><div class="v"><b>Отдых по таймеру</b>Прокручивание телефона между подходами убивает плотность тренировки.</div></div>
+        <div class="row"><div class="k">06</div><div class="v"><b>Отдых 60–90 секунд на изоляции</b>Прокручивание телефона между подходами убивает плотность тренировки.</div></div>
         <div class="row"><div class="k">07</div><div class="v"><b>Сон 7–9 часов</b>Недосып повышает аппетит и частоту травм.</div></div>
       </div>
     </div>
@@ -418,8 +422,8 @@
 
 <div id="toast"></div>
 
-<script src="data.js?v=17"></script>
-<script src="panel.js?v=17"></script>
+<script src="data.js?v=18"></script>
+<script src="panel.js?v=18"></script>
 <script>
 /* снимаем возможные старые service worker'ы, но НЕ перезагружаем страницу:
    принудительный redirect ловил цикл перезагрузок в iOS standalone */
