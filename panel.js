@@ -109,15 +109,27 @@ function weekSets(wk){
 }
 
 /* ---------- медиа упражнения ---------- */
-/* Миниатюра: всегда рисуем схему, поверх неё — настоящее видео,
-   если оно загрузилось. Видео НЕ перекрашивается, показывается как есть
-   на светлой подложке. Если видео не декодировалось — остаётся схема,
-   то есть миниатюра никогда не бывает пустой. */
+/* Миниатюра упражнения.
+   Приоритет: схема из Wikimedia Commons (две фазы движения, анимируются)
+   → видео → своя схема. Ничего не перекрашиваем «насильно»: схемы уже
+   светлые, видео показывается как есть на светлой подложке. */
 function media(id){
   var e=EX[id];
-  var v = IMG[e.svg]
-    ? '<video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video>' : '';
-  return '<div class="media">'+frame(SVG[e.svg]||'')+v+'</div>';
+  if(typeof FRAMES!=='undefined' && FRAMES[id]) return frames(FRAMES[id]);
+  if(IMG[e.svg]){
+    return '<div class="media video"><video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video></div>';
+  }
+  return '<div class="media">'+frame(SVG[e.svg]||'')+'</div>';
+}
+function frames(pair){
+  var a=pair[0], b=pair[1];
+  if(a.slice(0,4)==='DATA'){
+    return '<div class="media img"><img class="fr" src="'+a+'" alt=""><img class="fr b" src="'+b+'" alt=""></div>';
+  }
+  return '<div class="media frs">'+svg(a,'fr')+svg(b,'fr b')+'</div>';
+}
+function svg(src,cls){
+  return src.replace('<svg','<svg class="'+cls+'"');
 }
 /* схему обрезаем по центру, чтобы заполняла квадрат миниатюры */
 function frame(svg){
