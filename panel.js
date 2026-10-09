@@ -200,7 +200,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 26 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 27 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
