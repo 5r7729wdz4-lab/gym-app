@@ -120,7 +120,7 @@ header{padding:calc(env(safe-area-inset-top) + 22px) 0 6px}
   border:1px solid transparent;padding:0;-webkit-tap-highlight-color:transparent;cursor:pointer}
 .wkgrid button:active{transform:scale(.9)}
 .wkgrid button.full{background:var(--fg)}
-.wkgrid button.mk{background:var(--s3);border-color:rgba(255,255,255,.3)}
+.wkgrid button.mk{background:var(--fg)}
 .wkgrid button.now{box-shadow:0 0 0 1.5px rgba(124,92,255,.9)}
 .wklegend{display:flex;justify-content:space-between;font-size:9.5px;font-weight:600;letter-spacing:.1em;color:var(--fg3);margin-top:8px}
 .wkbar{height:4px;background:var(--s3);border-radius:99px;overflow:hidden;margin-top:12px}
