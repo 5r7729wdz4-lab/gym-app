@@ -4,7 +4,7 @@
    Это значит, что при каждом открытии ты получаешь свежую версию,
    а офлайн-режим работает как раньше.
    ============================================================ */
-var VERSION = 'zal-v20';
+var VERSION = 'zal-v22';
 var CACHE = VERSION + '-cache';
 
 self.addEventListener('install', function(e){

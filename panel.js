@@ -123,7 +123,7 @@ function media(id){
 }
 function frames(pair){
   var a=pair[0], b=pair[1];
-  if(a.slice(0,4)==='DATA'){
+  if(a.slice(0,5)==='data:'){
     return '<div class="media img"><img class="fr" src="'+a+'" alt=""><img class="fr b" src="'+b+'" alt=""></div>';
   }
   return '<div class="media frs">'+svg(a,'fr')+svg(b,'fr b')+'</div>';
@@ -188,7 +188,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 20 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 22 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
