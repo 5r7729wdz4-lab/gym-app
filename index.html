@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="panel.css?v=22">
+<link rel="stylesheet" href="panel.css?v=23">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -45,7 +45,7 @@
   <div class="hd">
     <div class="hd-l">
       <h1 id="greet">Доброе утро</h1>
-      <div class="date" id="dline">версия 22 · <span id="dline2">—</span></div>
+      <div class="date" id="dline">версия 23 · <span id="dline2">—</span></div>
     </div>
     <div class="orb">
       <div class="orb-glow"></div>
@@ -89,7 +89,7 @@
         <button class="btn alt" style="flex:1;font-size:14px;padding:13px" onclick="shiftWeek(-1)">− неделя</button>
         <button class="btn alt" style="flex:1;font-size:14px;padding:13px" onclick="shiftWeek(1)">+ неделя</button>
       </div>
-      <p style="margin-top:10px;font-size:11.5px;color:var(--fg3)">Недели считаются по датам. Если номер не тот — поправь кнопками, история пересчитается сама.</p>
+      <p style="margin-top:10px;font-size:11.5px;color:var(--fg3)">Нажми на клетку — отметишь день вручную, если тренировался, но забыл внести. Недели считаются по датам; если номер не тот — поправь кнопками, история пересчитается сама.</p>
     </div>
   </div>
 
@@ -424,9 +424,9 @@
 
 <div id="toast"></div>
 
-<script src="frames.js?v=22"></script>
-<script src="data.js?v=22"></script>
-<script src="panel.js?v=22"></script>
+<script src="frames.js?v=23"></script>
+<script src="data.js?v=23"></script>
+<script src="panel.js?v=23"></script>
 <script>
 /* Регистрируем сетевой-первый service worker: при каждом открытии
    страница сначала идёт в сеть, кеш используется только офлайн.

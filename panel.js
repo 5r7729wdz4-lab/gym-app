@@ -56,7 +56,7 @@ function shiftDays(iso,n){
   return ldate(d);
 }
 function wkFromDate(iso){
-  var a=new Date(cycleStart()+'T12:00'), b=new Date(iso+'T12:00');
+  var a=new Date(cycleStart()+'T00:00'), b=new Date(iso+'T00:00');
   return Math.max(1,Math.floor((b-a)/86400000/7)+1);
 }
 /* Один раз приводим старые записи к календарю: неделя считается от даты,
@@ -75,8 +75,7 @@ function cycleStart(){
   return s;
 }
 function curWeek(){
-  var a=new Date(cycleStart()+'T12:00'), b=new Date();
-  return Math.max(1, Math.floor((b-a)/86400000/7)+1);
+  return wkFromDate(today());
 }
 function setWeekNow(n){
   n=Math.max(1,Math.min(60,n|0));
@@ -95,9 +94,21 @@ function weekRange(wk){
 function weekDone(wk){
   var n=0;
   DAYS_ID.forEach(function(d){
-    if(SS.some(function(x){ return +x.wk===wk && x.day===d && x.ex && Object.keys(x.ex).length })) n++;
+    if(realDone(wk,d) || isMarked(wk,d)) n++;
   });
   return n;
+}
+/* ---- ручные отметки прошлых недель: "был по 2 дня", без подробностей ---- */
+var MARKS = readJSON('gym_marks',{});
+function isMarked(wk,d){ return !!(MARKS[wk] && MARKS[wk][d]) }
+function toggleMark(wk,d){
+  if(!MARKS[wk]) MARKS[wk]={};
+  if(MARKS[wk][d]) delete MARKS[wk][d]; else MARKS[wk][d]=1;
+  save('gym_marks',JSON.stringify(MARKS));
+  renderWeek(); renderStats();
+}
+function realDone(wk,d){
+  return SS.some(function(x){ return +x.wk===wk && x.day===d && x.ex && Object.keys(x.ex).length });
 }
 function weekSets(wk){
   var n=0;
@@ -109,13 +120,14 @@ function weekSets(wk){
 }
 
 /* ---------- медиа упражнения ---------- */
-/* Миниатюра упражнения.
-   Приоритет: схема из Wikimedia Commons (две фазы движения, анимируются)
-   → видео → своя схема. Ничего не перекрашиваем «насильно»: схемы уже
-   светлые, видео показывается как есть на светлой подложке. */
+/* Миниатюра упражнения. Приоритет: анимированная схема Wikimedia Commons
+   (две фазы движения) → своя анимированная схема → видео.
+   Видео в последнюю очередь: у части упражнений оно не совпадает
+   с описанием, схема всегда показывает нужное движение. */
 function media(id){
   var e=EX[id];
   if(typeof FRAMES!=='undefined' && FRAMES[id]) return frames(FRAMES[id]);
+  if(SVG[e.svg]) return '<div class="media">'+frame(SVG[e.svg])+'</div>';
   if(IMG[e.svg]){
     return '<div class="media video"><video muted loop playsinline preload="auto" data-vid="'+e.svg+'"></video></div>';
   }
@@ -188,7 +200,7 @@ function renderHead(){
   var dd=String(d.getDate()).padStart(2,'0'), mm=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'][d.getMonth()];
   var wk=curWeek(), n=weekDone(wk);
 
-  $('#dline').innerHTML='версия 22 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
+  $('#dline').innerHTML='версия 23 · '+wd+', '+dd+' '+mm+' · <b>неделя '+wk+' из 8</b>';
   $('#orbNum').textContent=wk;
   $('#orbLbl').textContent='неделя';
   var C=2*Math.PI*46;
@@ -334,8 +346,10 @@ function renderWeek(){
   DAYS_ID.forEach(function(d){
     var line='<span class="rl">'+d+'</span>';
     for(var w=1;w<=8;w++){
-      var has=SS.some(function(x){ return +x.wk===w && x.day===d && x.ex && Object.keys(x.ex).length });
-      line+='<i class="'+(has?'full':'')+(w===wk?' now':'')+'" title="неделя '+w+', день '+d+'"></i>';
+      var has=realDone(w,d), mk=isMarked(w,d);
+      line+='<button class="'+(has?'full':mk?'mk':'')+(w===wk?' now':'')+
+        '" onclick="toggleMark('+w+',\''+d+'\')" title="неделя '+w+', день '+d+
+        (has?' — отмечено автоматически':mk?' — отмечено вручную':' — нажми, чтобы отметить')+'"></button>';
     }
     rows+=line;
   });

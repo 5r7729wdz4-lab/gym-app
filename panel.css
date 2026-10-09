@@ -116,9 +116,12 @@ header{padding:calc(env(safe-area-inset-top) + 22px) 0 6px}
 /* ---------- точки недели ---------- */
 .wkgrid{display:grid;grid-template-columns:26px repeat(8,minmax(0,1fr));gap:6px;align-items:center}
 .wkgrid .rl{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--fg3)}
-.wkgrid i{height:26px;border-radius:7px;background:var(--s3);display:block;transition:.3s}
-.wkgrid i.full{background:var(--fg)}
-.wkgrid i.now{box-shadow:0 0 0 1.5px rgba(124,92,255,.9)}
+.wkgrid button{height:26px;border-radius:7px;background:var(--s3);display:block;transition:.3s;
+  border:1px solid transparent;padding:0;-webkit-tap-highlight-color:transparent;cursor:pointer}
+.wkgrid button:active{transform:scale(.9)}
+.wkgrid button.full{background:var(--fg)}
+.wkgrid button.mk{background:var(--s3);border-color:rgba(255,255,255,.3)}
+.wkgrid button.now{box-shadow:0 0 0 1.5px rgba(124,92,255,.9)}
 .wklegend{display:flex;justify-content:space-between;font-size:9.5px;font-weight:600;letter-spacing:.1em;color:var(--fg3);margin-top:8px}
 .wkbar{height:4px;background:var(--s3);border-radius:99px;overflow:hidden;margin-top:12px}
 .wkbar i{display:block;height:100%;background:linear-gradient(90deg,var(--v1),var(--v2));border-radius:99px;transition:width .5s var(--ease)}
@@ -149,9 +152,10 @@ header{padding:calc(env(safe-area-inset-top) + 22px) 0 6px}
 .media video.ready{opacity:1}
 .media svg{position:absolute;inset:0;width:100%;height:100%}
 .media.img img.fr{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.fr{position:absolute;inset:0;width:100%;height:100%;animation:frswap 2.6s ease-in-out infinite}
-.fr.b{opacity:0}
-@keyframes frswap{0%,42%{opacity:1}50%,92%{opacity:0}100%{opacity:1}}
+.fr{position:absolute;inset:0;width:100%;height:100%;opacity:1;animation:frA 3.4s ease-in-out infinite}
+.fr.b{opacity:0;animation-name:frB}
+@keyframes frA{0%,45%{opacity:1}55%,95%{opacity:0}100%{opacity:1}}
+@keyframes frB{0%,45%{opacity:0}55%,95%{opacity:1}100%{opacity:0}}
 .ex-b{flex:1;min-width:0}
 .ex-b .tag{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)}
 .ex-b h3{font-size:16.5px;font-weight:600;letter-spacing:-.03em;line-height:1.2;margin-top:7px}
